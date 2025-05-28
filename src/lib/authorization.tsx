@@ -163,9 +163,7 @@ export function useAuthenticatedUser(): { user: User; isLoading: boolean } {
   const { user, isLoading } = useAuth()
 
   if (!isLoading && !user) {
-    throw new Error(
-      'User is not authenticated',
-    )
+    throw new Error('User is not authenticated')
   }
 
   return { user: user as User, isLoading }

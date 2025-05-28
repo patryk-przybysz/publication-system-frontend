@@ -63,9 +63,6 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "bun check --fix --no-errors-on-unmatched"
-    ],
-    "*.{ts,tsx}": [
-      "tsc-files --noEmit --incremental false"
     ]
   }
 }

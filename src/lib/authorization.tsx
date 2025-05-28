@@ -164,7 +164,7 @@ export function useAuthenticatedUser(): { user: User; isLoading: boolean } {
 
   if (!isLoading && !user) {
     throw new Error(
-      'useAuthenticatedUser can only be used in authenticated contexts',
+      'User is not authenticated',
     )
   }
 

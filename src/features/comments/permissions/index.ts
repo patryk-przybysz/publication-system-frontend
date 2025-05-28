@@ -3,5 +3,5 @@ import { canPerformAction } from '@/utils/permissions'
 
 export const canCreateComment = (user: User | null) =>
   canPerformAction(user, {
-    requiredRoles: ['EDITOR'],
+    requiredRoles: ['USER', 'EDITOR'],
   })

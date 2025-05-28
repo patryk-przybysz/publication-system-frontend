@@ -1,28 +1,11 @@
 import logo from '@/assets/logo.svg'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
 import { Separator } from '@/components/ui/separator'
 import { getRoleColor } from '@/utils/user'
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  Edit,
-  Eye,
-  Globe,
-  MessageCircle,
-  Plus,
-  Settings,
-  Shield,
-  User,
-  UserCheck,
-} from 'lucide-react'
+import { Edit, Globe, Settings, Shield, User } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
   component: HomeRoute,
@@ -162,160 +145,134 @@ function HomeRoute() {
 
         <section className="mb-16 mt-16">
           <h2 className="text-3xl font-bold text-center mb-8 text-foreground">
-            User Roles & Permissions
+            User Permissions Matrix
           </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="outline" className="w-fit">
-                    <Globe className="h-3 w-3 mr-1" />
-                    GUEST
-                  </Badge>
-                </CardTitle>
-                <CardDescription>Anonymous visitor access</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Permissions:</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Eye className="h-3 w-3" />
-                      List articles
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <UserCheck className="h-3 w-3" />
-                      View users list
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Plus className="h-3 w-3" />
-                      Register new account
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-2 border-t">
-                  <p className="text-xs text-muted-foreground ">
-                    No login required. Cannot view individual article details or
-                    user profiles.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="max-w-5xl mx-auto">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse bg-card rounded-lg border">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="text-left p-4 font-semibold">Permission</th>
+                    <th className="text-center p-4 font-semibold">
+                      <Badge variant="outline" className="w-fit">
+                        <Globe className="h-3 w-3 mr-1" />
+                        GUEST
+                      </Badge>
+                    </th>
+                    <th className="text-center p-4 font-semibold">
+                      <Badge variant={getRoleColor('USER')} className="w-fit">
+                        <User className="h-3 w-3 mr-1" />
+                        USER
+                      </Badge>
+                    </th>
+                    <th className="text-center p-4 font-semibold">
+                      <Badge variant={getRoleColor('EDITOR')} className="w-fit">
+                        <Edit className="h-3 w-3 mr-1" />
+                        EDITOR
+                      </Badge>
+                    </th>
+                    <th className="text-center p-4 font-semibold">
+                      <Badge variant={getRoleColor('ADMIN')} className="w-fit">
+                        <Shield className="h-3 w-3 mr-1" />
+                        ADMIN
+                      </Badge>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b bg-muted/20">
+                    <td className="p-4 font-medium" colSpan={5}>
+                      <strong>Articles</strong>
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">List articles</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">Read articles</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">✅*</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">Create articles</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">❌</td>
+                  </tr>
+                  <tr className="border-b bg-muted/20">
+                    <td className="p-4 font-medium" colSpan={5}>
+                      <strong>User Accounts</strong>
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">List user accounts**</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">Edit profile***</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                  </tr>
+                  <tr className="border-b bg-muted/20">
+                    <td className="p-4 font-medium" colSpan={5}>
+                      <strong>Comments</strong>
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">View comments</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">Add comments</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">❌</td>
+                  </tr>
+                  <tr className="border-b bg-muted/20">
+                    <td className="p-4 font-medium" colSpan={5}>
+                      <strong>Registration</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 pl-8">Register new account</td>
+                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">❌</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant={getRoleColor('USER')} className="w-fit">
-                    <User className="h-3 w-3 mr-1" />
-                    USER
-                  </Badge>
-                </CardTitle>
-                <CardDescription>Authenticated user access</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">
-                    Additional permissions:
-                  </h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Eye className="h-3 w-3" />
-                      View individual article content*
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <UserCheck className="h-3 w-3" />
-                      List user accounts
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Edit className="h-3 w-3" />
-                      Edit own profile
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-2 border-t">
-                  <p className="text-xs text-muted-foreground">
-                    *Article access subject to age restrictions and content
-                    policies. Profile views show basic info (usernames) only.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant={getRoleColor('EDITOR')} className="w-fit">
-                    <Edit className="h-3 w-3 mr-1" />
-                    EDITOR
-                  </Badge>
-                </CardTitle>
-                <CardDescription>
-                  Content creation and management
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">
-                    All User permissions plus:
-                  </h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Eye className="h-3 w-3" />
-                      View all articles
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Plus className="h-3 w-3" />
-                      Create new articles
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <MessageCircle className="h-3 w-3" />
-                      Add comments
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-2 border-t">
-                  <p className="text-xs text-muted-foreground">
-                    Can create and access all content regardless of age
-                    restrictions.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant={getRoleColor('ADMIN')} className="w-fit">
-                    <Shield className="h-3 w-3 mr-1" />
-                    ADMIN
-                  </Badge>
-                </CardTitle>
-                <CardDescription>Full platform administration</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 flex-1 flex flex-col">
-                <div className="space-y-2 flex-1">
-                  <h4 className="font-medium text-sm">
-                    All Editor permissions plus:
-                  </h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Edit className="h-3 w-3" />
-                      Edit any user profile
-                    </li>
-                    <li className="flex items-center gap-2 line-through opacity-50">
-                      <MessageCircle className="h-3 w-3" />
-                      Add comments
-                    </li>
-                  </ul>
-                </div>
-                <div className="pt-2 border-t">
-                  <p className="text-xs text-muted-foreground">
-                    Administrative control over users and content, access to
-                    restricted content.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="mt-6 space-y-2 text-sm text-muted-foreground">
+              <p>
+                <strong>*</strong> Subject to age and account age restrictions
+              </p>
+              <p>
+                <strong>**</strong> Guest and User roles view usernames only;
+                Editor and Admin roles view detailed profiles
+              </p>
+              <p>
+                <strong>***</strong> User and Editor roles can edit own profile
+                only; Admin role can edit any user profile
+              </p>
+            </div>
           </div>
         </section>
       </main>

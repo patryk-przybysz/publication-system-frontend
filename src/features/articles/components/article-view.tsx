@@ -62,7 +62,7 @@ function ArticleComments({
             <div className="text-center py-6 border rounded-lg bg-muted/20">
               <Lock className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
               <p className="text-sm text-muted-foreground">
-                Editor access required to comment
+                You are not allowed to comment on this article
               </p>
             </div>
           }

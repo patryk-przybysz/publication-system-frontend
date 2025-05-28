@@ -1,6 +1,10 @@
 import { Badge } from '@/components/ui/badge'
+import { Spinner } from '@/components/ui/spinner'
+import { WithLoading } from '@/components/ui/with-loading'
 import { UpdateBirthDateForm } from '@/features/accounts/components/update-birth-date-form'
-import { useAuthenticatedUser } from '@/lib/authorization'
+import { useLoadingState } from '@/hooks/use-loading-state'
+import { useAuth, useAuthenticatedUser } from '@/lib/authorization'
+import type { User } from '@/types/api'
 import { formatFullDate } from '@/utils/date'
 import {
   formatMembershipDuration,
@@ -14,9 +18,15 @@ export const Route = createFileRoute('/app/_authenticated/profile')({
 })
 
 function ProfileRoute() {
-  const { user } = useAuthenticatedUser()
-  return (
-    <div className="container py-8">
+  const { user, isLoading } = useAuthenticatedUser()
+
+  return <WithLoading isLoading={isLoading}>
+    <Profile user={user} />
+  </WithLoading>
+}
+
+function Profile({ user }: { user: User }) {
+  return <div className="container py-8">
       <h1 className="text-3xl font-bold mb-8">Profile</h1>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -139,5 +149,4 @@ function ProfileRoute() {
         </div>
       </div>
     </div>
-  )
 }

@@ -1,0 +1,27 @@
+---
+description: How and when to use the API client
+globs: 
+alwaysApply: false
+---
+# API Layer
+
+## Use a Single Instance of the API Client
+
+We use a single instance of the API client that has been pre-configured. 
+
+[api-client.ts](mdc:src/lib/api-client.ts)
+
+Rather than declaring API requests on the fly, it is recommended to define and export them separately.
+
+Declaring API requests in a structured manner can help maintain a clean and organized codebase as everything is colocated.
+Every API request declaration should consist of:
+
+- Types and validation schemas for the request and response data
+- A fetcher function that calls an endpoint, using the API client instance
+- A hook that consumes the fetcher function that is built on top of `Tanstack Query` to manage the data fetching and caching logic. Follow the guidelines outlined in [data-fetching.mdc](mdc:.cursor/rules/data-fetching.mdc).
+
+This approach simplifies the tracking of defined endpoints available in the application. Additionally, typing the responses and inferring them further down the application enhances application type safety.
+
+references:
+  - src/features/articles/api/create-article.ts
+  - src/features/articles/api/create-article.ts

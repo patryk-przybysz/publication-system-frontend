@@ -1,0 +1,39 @@
+---
+description: Add environment variable
+globs: 
+alwaysApply: false
+---
+This is how we add environment variables to the project:
+
+  1. Add to `.env.example`:
+      ```bash
+      NEW_VARIABLE=value_example
+      ```
+
+  2. Add to `config/env.ts`:
+      ```typescript
+      // For client-side variables
+      client: {
+        VITE_NEW_VARIABLE: z.string(),
+      }
+      ```
+
+  3. For client-side variables:
+      - Must be prefixed with `VITE_PUBLIC_`
+      - Add to both `client` section
+
+examples:
+  - input: |
+      # Adding a client-side feature flag
+      # .env.example
+      VITE_FEATURE_ENABLED=false
+
+      # env.ts
+      client: {
+        VITE_FEATURE_ENABLED: z.coerce.boolean().default(false),
+      },
+
+    output: "Client-side environment variable properly added"
+
+references:
+  - src/config/env.ts

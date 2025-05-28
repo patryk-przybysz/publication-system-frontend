@@ -1,0 +1,204 @@
+---
+description: Fetching data from the API using Tanstack Query
+globs: 
+alwaysApply: false
+---
+# Data Fetching
+
+Use Tanstack Query for all data fetching needs as it provides excellent caching, synchronization, and error handling capabilities.
+
+## Architecture Organization
+Place all API-related queries and mutations under `features/<entity>/api/` to maintain clean architecture as recommended by Bulletproof React:
+```
+src/
+  features/
+    articles/
+      api/
+        get-articles.ts
+        create-article.ts
+        update-article.ts
+        delete-article.ts
+```
+
+## Query Pattern
+For GET requests, follow this structure:
+
+```typescript
+import { apiFetch } from '@/lib/api-client'
+import type { QueryConfig } from '@/lib/react-query'
+import type { EntityDTO, SortParam } from '@/types/api'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+
+type GetEntitiesParams = {
+  // Define your query parameters
+  param1?: string
+  param2?: number
+  page?: number
+  size?: number
+  sort?: SortParam<EntityDTO>
+}
+
+// Core API function
+export const getEntities = ({
+  param1,
+  param2,
+  page,
+  size,
+  sort,
+}: GetEntitiesParams = {}) =>
+  apiFetch<EntityDTO[]>('/entities', {
+    params: {
+      param1,
+      param2,
+      page,
+      size,
+      sort,
+    },
+  })
+
+// Query options factory for reusability
+export const getEntitiesQueryOptions = ({
+  param1,
+  param2,
+  page,
+  size,
+  sort,
+}: GetEntitiesParams = {}) => {
+  return queryOptions({
+    queryKey: ['entities', { param1, param2, page, size, sort }],
+    queryFn: () => getEntities({ param1, param2, page, size, sort }),
+  })
+}
+
+// Hook for component usage
+type UseEntitiesOptions = {
+  param1?: string
+  param2?: number
+  page?: number
+  size?: number
+  sort?: SortParam<EntityDTO>
+  queryConfig?: QueryConfig<typeof getEntitiesQueryOptions>
+}
+
+export const useEntities = ({
+  queryConfig,
+  param1,
+  param2,
+  page,
+  size,
+  sort,
+}: UseEntitiesOptions) => {
+  return useQuery({
+    ...getEntitiesQueryOptions({ param1, param2, page, size, sort }),
+    ...queryConfig,
+  })
+}
+```
+
+## Mutation Pattern
+For POST/PUT/DELETE requests, follow this structure:
+
+```typescript
+import { apiFetch } from '@/lib/api-client'
+import type { MutationConfig } from '@/lib/react-query'
+import type { EntityDTO } from '@/types/api'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { getEntitiesQueryOptions } from './get-entities'
+
+// Define input schema with Zod
+export const createEntityInputSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+  // Add other required fields
+})
+
+export type CreateEntityInput = z.infer<typeof createEntityInputSchema>
+
+// Core API function
+export const createEntity = ({
+  data,
+}: {
+  data: CreateEntityInput
+}): Promise<EntityDTO> =>
+  apiFetch('/entities', {
+    body: data,
+  })
+
+// Hook for component usage
+type UseCreateEntityOptions = {
+  mutationConfig?: MutationConfig<typeof createEntity>
+}
+
+export const useCreateEntity = ({
+  mutationConfig,
+}: UseCreateEntityOptions) => {
+  const queryClient = useQueryClient()
+
+  const { onSuccess, onError, ...restConfig } = mutationConfig || {}
+
+  return useMutation({
+    mutationFn: createEntity,
+    onSuccess: (data, ...args) => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({
+        queryKey: getEntitiesQueryOptions().queryKey,
+      })
+      
+      // Show success toast
+      toast.success(`Entity created successfully`)
+      
+      // Call custom onSuccess handler
+      onSuccess?.(data, ...args)
+    },
+    onError: (error, ...args) => {
+      // Show error toast
+      toast.error(`Failed to create entity: ${error.message}`)
+      
+      // Call custom onError handler
+      onError?.(error, ...args)
+    },
+    ...restConfig,
+  })
+}
+```
+
+## Error Handling
+Always use Sonner's `toast.success` and `toast.error` for user feedback:
+
+```typescript
+import { toast } from 'sonner'
+
+// In mutation onSuccess
+toast.success(`Successfully created ${entityName}`)
+
+// In mutation onError
+toast.error(`Failed to create ${entityName}: ${error.message}`)
+
+// Custom error messages based on status
+onError: (error) => {
+  if (error.status === 409) {
+    toast.error('Entity already exists')
+  } else {
+    toast.error(`Failed to create entity: ${error.message}`)
+  }
+}
+```
+
+## Query Key Conventions
+- Use descriptive, hierarchical query keys
+- Include all parameters that affect the data
+- Example: `['articles', { author, requiredAge, page, size, sort }]`
+
+## Best Practices
+1. **Extract query options**: Always create reusable `getEntityQueryOptions` functions
+2. **Type safety**: Use TypeScript interfaces for all parameters and responses
+3. **Validation**: Use Zod schemas for mutation inputs
+4. **Query invalidation**: Invalidate related queries after mutations
+5. **Error feedback**: Always provide user feedback for mutations
+6. **Configuration**: Support custom `queryConfig` and `mutationConfig` for flexibility
+
+references:
+  - src/features/articles/api/get-articles.ts
+  - src/features/articles/api/create-article.ts 

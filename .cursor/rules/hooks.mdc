@@ -1,0 +1,20 @@
+---
+description: React hooks
+globs: 
+alwaysApply: false
+---
+# Custom Hook Guidelines
+
+This rule outlines the guidelines for creating custom React hooks within this project.
+
+## Custom Hooks
+
+-   **Purpose:** Encapsulate reusable stateful logic, especially for data fetching or complex UI interactions.
+-   **Location:** Place custom hooks in the `src/hooks/` or a feature-specific directory.
+-   **Naming:** Use the `use` prefix (e.g., `use-debounce.ts`).
+-   **Data Fetching:** For fetching data from API endpoints, prefer using Tanstack Query. Follow the guidelines outlined in [data-fetching.mdc](mdc:.cursor/rules/data-fetching.mdc).
+    -   Create dedicated hooks for specific data types (e.g., `useAccounts`, `useComments`).
+    -   The hook should typically wrap `useQuery`, `useSuspenseQuery` or `useMutation`
+-   **Simplicity:** Keep hooks focused on a single responsibility.
+
+By adhering to these guidelines, we ensure a consistent approach to reusable logic and data fetching throughout the application.

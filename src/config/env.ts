@@ -13,6 +13,10 @@ export const env = createEnv({
     VITE_URL: z.string().url().default('http://localhost:3000'),
   },
 
+  shared: {
+    NODE_ENV: z.string().default(() => import.meta.env.MODE),
+  },
+
   /**
    * What object holds the environment variables at runtime. This is usually
    * `process.env` or `import.meta.env`.

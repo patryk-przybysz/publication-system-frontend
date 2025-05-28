@@ -2,8 +2,7 @@ import { Button } from '@/components/ui/button'
 import { WithLoading } from '@/components/ui/with-loading'
 import { getAccountsQueryOptions } from '@/features/accounts/api/get-accounts'
 import { getAccountsDetailsQueryOptions } from '@/features/accounts/api/get-accounts-details'
-import { AccountsDetailsList } from '@/features/accounts/components/accounts-details-list'
-import { AccountsList } from '@/features/accounts/components/accounts-list'
+import { DetailedAccountsList, BasicAccountsList } from '@/features/accounts/components/accounts-list'
 import { useAuth } from '@/lib/authorization'
 import { createFileRoute } from '@tanstack/react-router'
 import { Lock } from 'lucide-react'
@@ -54,11 +53,11 @@ function AccountsRoute() {
           <main>
             {isAuthenticated ? (
               <section aria-label="Detailed user accounts">
-                <AccountsDetailsList />
+                <DetailedAccountsList />
               </section>
             ) : (
               <section aria-label="Basic user directory">
-                <AccountsList />
+                <BasicAccountsList />
               </section>
             )}
           </main>

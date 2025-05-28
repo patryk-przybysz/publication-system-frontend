@@ -16,10 +16,11 @@ import {
   Edit,
   Eye,
   Globe,
+  MessageCircle,
   Plus,
   Settings,
   Shield,
-  Trash2,
+  User,
   UserCheck,
 } from 'lucide-react'
 
@@ -43,12 +44,12 @@ function HomeRoute() {
             Publication System
           </h1>
           <p className="mb-8 text-xl text-muted-foreground max-w-2xl mx-auto">
-            A comprehensive platform for managing and publishing articles with
-            role-based access control, age restrictions, and collaborative
-            features.
+            A comprehensive platform for managing and publishing articles with{' '}
+            <span className="whitespace-nowrap">role-based</span> access control
+            and age restrictions.
           </p>
 
-          <Link to="/app">
+          <Link to="/app" preload={false}>
             <Button size="lg" className="text-lg px-8 py-3">
               Go to Dashboard
             </Button>
@@ -57,32 +58,103 @@ function HomeRoute() {
 
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-center mb-8 text-foreground">
-            Platform Overview
+            About the Platform
           </h2>
-          <div className="max-w-4xl mx-auto text-muted-foreground leading-relaxed space-y-4">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur.
-            </p>
-            <p>
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum. Sed ut perspiciatis
-              unde omnis iste natus error sit voluptatem accusantium doloremque
-              laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-              veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-            </p>
-            <p>
-              Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit
-              aut fugit, sed quia consequuntur magni dolores eos qui ratione
-              voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem
-              ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia
-              non numquam eius modi tempora incidunt ut labore et dolore magnam
-              aliquam quaerat voluptatem.
-            </p>
+          <div className="max-w-4xl mx-auto text-muted-foreground leading-relaxed space-y-6">
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-semibold text-foreground mb-3">
+                🎓 Academic Project Overview
+              </h3>
+              <p>
+                This Publication System was designed and implemented as part of
+                an academic initiative at{' '}
+                <strong className="text-foreground">
+                  Gdańsk University of Technology
+                </strong>
+                , within the course <em>"Introduction to Cybersecurity"</em>. It
+                serves as a realistic implementation of a digital publishing
+                platform that demonstrates real-world applications of access
+                control models.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-card p-6 rounded-lg border">
+                <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Security Models
+                </h3>
+                <p className="mb-3">
+                  The platform showcases both{' '}
+                  <strong>Role-Based Access Control (RBAC)</strong> and{' '}
+                  <strong>Attribute-Based Access Control (ABAC)</strong> in
+                  practice, providing different levels of access based on user
+                  roles and attributes.
+                </p>
+                <ul className="text-sm space-y-1 [&>li]:before:content-['•'] [&>li]:before:mr-2 [&>li]:before:text-primary">
+                  <li>
+                    Role-based permissions for users, editors, and
+                    administrators
+                  </li>
+                  <li>Age-based content restrictions</li>
+                  <li>Content management controls</li>
+                </ul>
+              </div>
+
+              <div className="bg-card p-6 rounded-lg border">
+                <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Platform Features
+                </h3>
+                <p className="mb-3">
+                  A digital publishing platform that handles user registration,
+                  article submission, and content management with access
+                  controls.
+                </p>
+                <ul className="text-sm space-y-1 [&>li]:before:content-['•'] [&>li]:before:mr-2 [&>li]:before:text-primary">
+                  <li>Article creation and management</li>
+                  <li>User authentication and authorization</li>
+                  <li>Comment system</li>
+                  <li>Administrative controls</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Technical Implementation
+              </h3>
+              <p className="mb-3">
+                Built with web technologies, the system demonstrates
+                enterprise-level security practices and clean architecture
+                patterns.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h4 className="font-medium text-foreground mb-2">
+                    Frontend Technologies:
+                  </h4>
+                  <ul className="space-y-1 [&>li]:before:content-['•'] [&>li]:before:mr-2 [&>li]:before:text-primary">
+                    <li>React 19 with TypeScript</li>
+                    <li>TanStack Router & Query</li>
+                    <li>Tailwind CSS & Radix UI</li>
+                    <li>Vite</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium text-foreground mb-2">
+                    Backend Technologies:
+                  </h4>
+                  <ul className="space-y-1 [&>li]:before:content-['•'] [&>li]:before:mr-2 [&>li]:before:text-primary">
+                    <li>Java 24 with Spring Boot 3</li>
+                    <li>Spring Security 6</li>
+                    <li>Spring Data JPA 3</li>
+                    <li>H2 & Maven</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -109,19 +181,22 @@ function HomeRoute() {
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
                       <Eye className="h-3 w-3" />
-                      Browse public content
+                      List articles
                     </li>
-                    <li className="text-muted-foreground/70">
-                      • View platform overview
+                    <li className="flex items-center gap-2">
+                      <UserCheck className="h-3 w-3" />
+                      View users list
                     </li>
-                    <li className="text-muted-foreground/70">
-                      • Access documentation
+                    <li className="flex items-center gap-2">
+                      <Plus className="h-3 w-3" />
+                      Register new account
                     </li>
                   </ul>
                 </div>
                 <div className="pt-2 border-t">
-                  <p className="text-xs text-muted-foreground">
-                    No account required. Limited to public content only.
+                  <p className="text-xs text-muted-foreground ">
+                    No login required. Cannot view individual article details or
+                    user profiles.
                   </p>
                 </div>
               </CardContent>
@@ -131,40 +206,36 @@ function HomeRoute() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Badge variant={getRoleColor('USER')} className="w-fit">
-                    <UserCheck className="h-3 w-3 mr-1" />
+                    <User className="h-3 w-3 mr-1" />
                     USER
                   </Badge>
                 </CardTitle>
-                <CardDescription>Basic platform access</CardDescription>
+                <CardDescription>Authenticated user access</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Permissions:</h4>
+                  <h4 className="font-medium text-sm">
+                    Additional permissions:
+                  </h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
                       <Eye className="h-3 w-3" />
-                      View own articles
+                      View individual article content*
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <UserCheck className="h-3 w-3" />
+                      List user accounts
                     </li>
                     <li className="flex items-center gap-2">
                       <Edit className="h-3 w-3" />
-                      Edit own articles
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Trash2 className="h-3 w-3" />
-                      Delete own articles
-                    </li>
-                    <li className="text-muted-foreground/70">
-                      • Comment on accessible articles
-                    </li>
-                    <li className="text-muted-foreground/70">
-                      • View profile and settings
+                      Edit own profile
                     </li>
                   </ul>
                 </div>
                 <div className="pt-2 border-t">
                   <p className="text-xs text-muted-foreground">
-                    Cannot create new articles. Access limited to
-                    age-appropriate content.
+                    *Article access subject to age restrictions and content
+                    policies. Profile views show basic info (usernames) only.
                   </p>
                 </div>
               </CardContent>
@@ -189,29 +260,23 @@ function HomeRoute() {
                   </h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <Plus className="h-3 w-3" />
-                      Create new articles
-                    </li>
-                    <li className="flex items-center gap-2">
                       <Eye className="h-3 w-3" />
                       View all articles
                     </li>
                     <li className="flex items-center gap-2">
-                      <Edit className="h-3 w-3" />
-                      Edit any article
+                      <Plus className="h-3 w-3" />
+                      Create new articles
                     </li>
-                    <li className="text-muted-foreground/70">
-                      • Set age restrictions on content
-                    </li>
-                    <li className="text-muted-foreground/70">
-                      • Manage article requirements
+                    <li className="flex items-center gap-2">
+                      <MessageCircle className="h-3 w-3" />
+                      Add comments
                     </li>
                   </ul>
                 </div>
                 <div className="pt-2 border-t">
                   <p className="text-xs text-muted-foreground">
-                    Primary content creators with enhanced access to platform
-                    features.
+                    Can create and access all content regardless of age
+                    restrictions.
                   </p>
                 </div>
               </CardContent>
@@ -227,35 +292,26 @@ function HomeRoute() {
                 </CardTitle>
                 <CardDescription>Full platform administration</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
+              <CardContent className="space-y-4 flex-1 flex flex-col">
+                <div className="space-y-2 flex-1">
                   <h4 className="font-medium text-sm">
                     All Editor permissions plus:
                   </h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <Trash2 className="h-3 w-3" />
-                      Delete any article
+                      <Edit className="h-3 w-3" />
+                      Edit any user profile
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Settings className="h-3 w-3" />
-                      Platform administration
-                    </li>
-                    <li className="text-muted-foreground/70">
-                      • User management
-                    </li>
-                    <li className="text-muted-foreground/70">
-                      • Content moderation
-                    </li>
-                    <li className="text-muted-foreground/70">
-                      • System configuration
+                    <li className="flex items-center gap-2 line-through opacity-50">
+                      <MessageCircle className="h-3 w-3" />
+                      Add comments
                     </li>
                   </ul>
                 </div>
                 <div className="pt-2 border-t">
                   <p className="text-xs text-muted-foreground">
-                    Complete control over platform operations and user
-                    management.
+                    Administrative control over users and content, access to
+                    restricted content.
                   </p>
                 </div>
               </CardContent>

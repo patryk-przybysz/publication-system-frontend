@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { AuthDialog } from '@/features/auth/components/auth-dialog'
-import { useLogout } from '@/lib/auth'
+import { LogoutButton } from '@/features/auth/components/logout-button'
 import { useAuth, useAuthenticatedUser } from '@/lib/authorization'
 import { cn } from '@/utils/cn'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
@@ -140,24 +140,6 @@ function UnauthenticatedWelcomeCard() {
         <AuthButtons />
       </div>
     </div>
-  )
-}
-
-function LogoutButton() {
-  const logoutMutation = useLogout()
-
-  const handleLogout = () => {
-    logoutMutation.mutate()
-  }
-
-  return (
-    <Button
-      variant="outline"
-      className="w-full justify-start gap-2 bg-background hover:text-destructive-foreground"
-      onClick={handleLogout}
-    >
-      🔒 Logout
-    </Button>
   )
 }
 

@@ -2,7 +2,10 @@ import { Button } from '@/components/ui/button'
 import { WithLoading } from '@/components/ui/with-loading'
 import { getAccountsQueryOptions } from '@/features/accounts/api/get-accounts'
 import { getAccountsDetailsQueryOptions } from '@/features/accounts/api/get-accounts-details'
-import { DetailedAccountsList, BasicAccountsList } from '@/features/accounts/components/accounts-list'
+import {
+  BasicAccountsList,
+  DetailedAccountsList,
+} from '@/features/accounts/components/accounts-list'
 import { useAuth } from '@/lib/authorization'
 import { createFileRoute } from '@tanstack/react-router'
 import { Lock } from 'lucide-react'

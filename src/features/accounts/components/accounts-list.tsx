@@ -1,12 +1,12 @@
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAccounts } from '@/features/accounts/api/get-accounts'
 import { useAccountsDetails } from '@/features/accounts/api/get-accounts-details'
+import type { AccountPublicDetails, AccountSummary } from '@/types/api'
 import { matchQueryStatus } from '@/utils/match-query'
 import type { UseQueryResult } from '@tanstack/react-query'
 import { AlertCircle, Users } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { AccountDetailsCard } from './account-details-card'
-import type { AccountPublicDetails, AccountSummary } from '@/types/api'
 
 type AccountType = AccountPublicDetails | AccountSummary
 
@@ -77,7 +77,10 @@ function ErrorState() {
         </div>
         <div className="space-y-2">
           <h3 className="text-xl font-semibold">Failed to load accounts</h3>
-          <p className="text-muted-foreground max-w-md">There was an error loading the user directory. Please try again later.</p>
+          <p className="text-muted-foreground max-w-md">
+            There was an error loading the user directory. Please try again
+            later.
+          </p>
         </div>
       </div>
     </div>
@@ -93,7 +96,9 @@ function EmptyState() {
         </div>
         <div className="space-y-2">
           <h3 className="text-xl font-semibold">No accounts found</h3>
-          <p className="text-muted-foreground max-w-md">There are no registered accounts</p>
+          <p className="text-muted-foreground max-w-md">
+            There are no registered accounts
+          </p>
         </div>
       </div>
     </div>

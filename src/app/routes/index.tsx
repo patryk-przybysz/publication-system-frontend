@@ -241,20 +241,15 @@ function HomeRoute() {
                     <td className="p-4 pl-8">Add comments</td>
                     <td className="text-center p-4">❌</td>
                     <td className="text-center p-4">✅</td>
-                    <td className="text-center p-4">✅</td>
+                    <td className="text-center p-4">❌</td>
                     <td className="text-center p-4">❌</td>
                   </tr>
-                  <tr className="border-b bg-muted/20">
-                    <td className="p-4 font-medium" colSpan={5}>
-                      <strong>Registration</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 pl-8">Register new account</td>
+                  <tr className="border-b">
+                    <td className="p-4 pl-8">Delete comments</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">❌</td>
+                    <td className="text-center p-4">❌</td>
                     <td className="text-center p-4">✅</td>
-                    <td className="text-center p-4">❌</td>
-                    <td className="text-center p-4">❌</td>
-                    <td className="text-center p-4">❌</td>
                   </tr>
                 </tbody>
               </table>

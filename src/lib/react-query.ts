@@ -4,6 +4,14 @@ import {
   type UseMutationOptions,
 } from '@tanstack/react-query'
 
+import type { FetchError } from 'ofetch'
+
+declare module '@tanstack/react-query' {
+  interface Register {
+    defaultError: FetchError
+  }
+}
+
 export const queryConfig = {
   queries: {
     // throwOnError: true,

@@ -5,9 +5,9 @@ import type { UseQueryResult } from '@tanstack/react-query'
 import { FetchError } from 'ofetch'
 import type { ReactNode } from 'react'
 
-type QueryMatchPatterns<TData> = {
+type QueryMatchPatterns<TData, TError extends Error = Error> = {
   loading?: () => ReactNode
-  error?: (error: Error) => ReactNode
+  error?: (error: TError) => ReactNode
   success: (data: TData) => ReactNode
   empty?: (data: TData) => ReactNode
 }
@@ -48,9 +48,9 @@ type QueryMatchOptions = {
  * })
  * ```
  */
-export function matchQueryStatus<TData>(
-  query: UseQueryResult<TData>,
-  patterns: QueryMatchPatterns<TData>,
+export function matchQueryStatus<TData, TError extends Error = Error>(
+  query: UseQueryResult<TData, TError>,
+  patterns: QueryMatchPatterns<TData, TError>,
   options: QueryMatchOptions = {},
 ): ReactNode {
   const {

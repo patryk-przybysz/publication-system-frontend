@@ -11,7 +11,6 @@ import type { Article, Comment } from '@/types/api'
 import { formatContentDate } from '@/utils/date'
 import { matchQueryStatus } from '@/utils/match-query'
 import { FileWarning, Lock, MessageCircle } from 'lucide-react'
-import { FetchError } from 'ofetch'
 import { useArticle } from '../api/get-article'
 
 export function ArticleView({ articleId }: { articleId: string }) {
@@ -21,8 +20,8 @@ export function ArticleView({ articleId }: { articleId: string }) {
 
   return matchQueryStatus(articleQuery, {
     error: (e) => {
-      if (e instanceof FetchError && e.status === 500)
-        return <ArticleNotFound />
+      if (e.status === 500) return <ArticleNotFound />
+      if (e.status === 403) return <ArticleUnauthorized />
       return <UnauthorizedError />
     },
     success: (article) => (
@@ -158,6 +157,24 @@ function ArticleComments({
         )}
       </div>
     </div>
+  )
+}
+
+function ArticleUnauthorized() {
+  return (
+    <ErrorComponent
+      icon={<Lock className="h-8 w-8 text-destructive" />}
+      title="Access Restricted"
+      description="Your account doesn't meet the requirements to view this article."
+    >
+      <Link
+        to="/app/articles"
+        replace
+        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+      >
+        Back to Articles
+      </Link>
+    </ErrorComponent>
   )
 }
 

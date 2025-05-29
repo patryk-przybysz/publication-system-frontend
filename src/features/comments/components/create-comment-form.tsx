@@ -16,9 +16,6 @@ export function CreateCommentForm({ articleId }: { articleId: Article['id'] }) {
         toast.success('Comment created successfully!')
         setContent('')
       },
-      onError: () => {
-        toast.error('Failed to create comment')
-      },
     },
   })
 

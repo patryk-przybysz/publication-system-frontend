@@ -150,13 +150,7 @@ export function useLogout(
     onSuccess: (...rest) => {
       queryClient.setQueryData(userKey, null)
 
-      queryClient.removeQueries({
-        queryKey: ['accounts', 'details'],
-      })
-
-      queryClient.invalidateQueries({
-        queryKey: userKey,
-      })
+      queryClient.invalidateQueries()
 
       options?.onSuccess?.(...rest)
     },

@@ -43,6 +43,7 @@ export type ArticleDetails = {
 }
 
 export type Comment = {
+  id: number
   author: string
   content: string
   createdAt: DateTimeString

@@ -1,6 +1,9 @@
 import { canEditAccount } from '@/features/accounts/permissions'
 import { canCreateArticle } from '@/features/articles/permissions'
-import { canCreateComment } from '@/features/comments/permissions'
+import {
+  canCreateComment,
+  canDeleteComment,
+} from '@/features/comments/permissions'
 import type { User } from '@/types/api'
 import { canPerformAction, hasRole } from '@/utils/permissions'
 import type { ReactNode } from 'react'
@@ -12,6 +15,7 @@ type PolicyFunction = (user: User | null, ...args: never[]) => boolean
 export const POLICIES = {
   'article:create': canCreateArticle,
   'comment:create': canCreateComment,
+  'comment:delete': canDeleteComment,
   'account:update': canEditAccount,
 } as const
 
@@ -199,4 +203,9 @@ export function useCanCreateArticle() {
 export function useCanCreateComment() {
   const { user } = useAuth()
   return canCreateComment(user)
+}
+
+export function useCanDeleteComment() {
+  const { user } = useAuth()
+  return canDeleteComment(user)
 }

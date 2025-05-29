@@ -4,6 +4,7 @@ import { Link } from '@/components/ui/link'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { CreateCommentForm } from '@/features/comments/components/create-comment-form'
+import { DeleteCommentButton } from '@/features/comments/components/delete-comment-button'
 import { useUser } from '@/lib/auth'
 import { Authorization } from '@/lib/authorization'
 import type { Article, Comment } from '@/types/api'
@@ -94,7 +95,7 @@ function ArticleComments({
                       currentUser?.username === comment.author
 
                     return (
-                      <div key={`${comment.author}-${comment.createdAt}`}>
+                      <div key={comment.id}>
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
                             <div
@@ -114,7 +115,7 @@ function ArticleComments({
                                 {comment.author.charAt(0).toUpperCase()}
                               </span>
                             </div>
-                            <div className="flex items-center gap-2 text-sm">
+                            <div className="flex items-center gap-2 text-sm flex-1">
                               <span className="font-medium">
                                 {comment.author}
                               </span>
@@ -128,6 +129,15 @@ function ArticleComments({
                                 {formatContentDate(comment.createdAt)}
                               </span>
                             </div>
+                            <Authorization
+                              policy="comment:delete"
+                              fallback={null}
+                            >
+                              <DeleteCommentButton
+                                comment={comment}
+                                articleId={articleId}
+                              />
+                            </Authorization>
                           </div>
                           <div className="ml-11">
                             <p className="text-sm leading-relaxed">

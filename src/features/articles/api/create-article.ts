@@ -38,10 +38,8 @@ export const useCreateArticle = ({
 
   return useMutation({
     onSuccess: (...args) => {
-      const invalidationQueryKey = getArticlesQueryOptions().queryKey
-      console.log({ invalidationQueryKey })
       queryClient.invalidateQueries({
-        queryKey: invalidationQueryKey,
+        queryKey: getArticlesQueryOptions().queryKey,
       })
       onSuccess?.(...args)
     },

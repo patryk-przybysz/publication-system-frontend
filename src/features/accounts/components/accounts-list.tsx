@@ -34,7 +34,7 @@ function AccountsList<T extends AccountType>({
 
 function SimpleAccountCard({ account }: { account: AccountSummary }) {
   return (
-    <Card key={account.username} className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Users className="h-5 w-5 text-muted-foreground" />
@@ -51,7 +51,9 @@ export function BasicAccountsList() {
   return (
     <AccountsList
       query={accountsQuery}
-      renderCard={(account) => <SimpleAccountCard account={account} />}
+      renderCard={(account) => (
+        <SimpleAccountCard key={account.username} account={account} />
+      )}
     />
   )
 }
@@ -62,7 +64,9 @@ export function DetailedAccountsList() {
   return (
     <AccountsList
       query={accountsDetailsQuery}
-      renderCard={(account) => <AccountDetailsCard account={account} />}
+      renderCard={(account) => (
+        <AccountDetailsCard key={account.username} account={account} />
+      )}
     />
   )
 }

@@ -10,7 +10,9 @@
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
-    "check": "biome check && tsc --noEmit",
+    "check": "biome check",
+    "typecheck": "tsc --noEmit",
+    "validate": "biome check && tsc --noEmit",
     "prepare": "husky"
   },
   "dependencies": {
@@ -62,7 +64,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "bun check --fix --no-errors-on-unmatched"
+      "biome check --fix --no-errors-on-unmatched"
     ]
   }
 }

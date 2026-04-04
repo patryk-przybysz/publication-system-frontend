@@ -4,7 +4,7 @@ import { useUser } from '@/lib/auth'
 import type { AccountPublicDetails } from '@/types/api'
 import { getBadgeVariant, getRoleIcon } from '@/utils/user'
 import { Verified } from 'lucide-react'
-import { UpdateBirthDateForm } from './update-birth-date-form'
+import { AdminBirthDateEditor } from './admin-birth-date-editor'
 
 type AccountDetailsCardProps = {
   account: AccountPublicDetails
@@ -53,7 +53,7 @@ export function AccountDetailsCard({ account }: AccountDetailsCardProps) {
 
         {isAdmin && (
           <div className="pt-2 border-t">
-            <UpdateBirthDateForm username={account.username} variant="admin" />
+            <AdminBirthDateEditor username={account.username} />
           </div>
         )}
       </CardContent>

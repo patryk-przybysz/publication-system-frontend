@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { WithLoading } from '@/components/ui/with-loading'
-import { UpdateBirthDateForm } from '@/features/accounts/components/update-birth-date-form'
+import { ProfileBirthDateEditor } from '@/features/accounts/components/profile-birth-date-editor'
 import { useAuthenticatedUser } from '@/lib/authorization'
 import type { User } from '@/types/api'
 import { formatFullDate } from '@/utils/date'
@@ -41,7 +41,10 @@ function Profile({ user }: { user: User }) {
               <dd className="mt-1 text-lg font-medium">{user.username}</dd>
             </div>
 
-            <UpdateBirthDateForm currentBirthDate={user.birth} />
+            <ProfileBirthDateEditor
+              username={user.username}
+              initialDate={user.birth}
+            />
 
             <div>
               <dt className="text-sm font-medium text-muted-foreground">

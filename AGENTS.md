@@ -20,6 +20,8 @@
 - **API Fetching**: 
   - Uses TanStack Query combined with an `ofetch` wrapper located at `src/lib/api-client.ts` (`export const api = ...`).
   - **Note**: The global `api` client already intercepts errors and triggers `sonner` toasts for standard HTTP codes (401, 403, 404, etc.). Avoid writing redundant `try/catch` toast logic in components unless custom error handling is required.
+- **Forms**:
+  - Uses `@tanstack/react-form` with Zod schemas colocated with mutations (e.g. `create-article.ts`, `update-account.ts`, `src/lib/auth.tsx` for login/register). Validators use Zod’s Standard Schema support.
 - **Access Control (RBAC/ABAC)**:
   - This frontend strongly features Role-Based and Attribute-Based Access Control.
   - Core logic and hooks for permissions reside in `src/lib/authorization.tsx` and `src/utils/permissions.ts`. Refer to these files when modifying user access flows.

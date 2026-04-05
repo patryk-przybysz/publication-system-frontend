@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query'
 import { FetchError } from 'ofetch'
 import { useEffect, useState } from 'react'
+import { z } from 'zod'
 import { api } from './api-client'
 import type { MutationConfig, QueryConfig } from './react-query'
 
@@ -37,16 +38,20 @@ export const authStorage = {
 
 const userKey = ['authenticated-user'] as const
 
-type AuthCredentials = {
-  username: string
-  password: string
-}
+export const loginInputSchema = z.object({
+  username: z.string().trim().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
+})
 
-type RegisterCredentials = {
-  username: string
-  password: string
-  birth: string
-}
+export const registerInputSchema = z.object({
+  username: z.string().trim().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
+  birth: z.string().min(1, 'Birth date is required'),
+})
+
+type AuthCredentials = z.infer<typeof loginInputSchema>
+
+type RegisterCredentials = z.infer<typeof registerInputSchema>
 
 async function loginFn({ username, password }: AuthCredentials) {
   authStorage.set({ username, password })

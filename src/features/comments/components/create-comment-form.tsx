@@ -10,6 +10,10 @@ import {
   useCreateComment,
 } from '../api/create-comment'
 
+const createCommentFormSchema = createCommentInputSchema.pick({
+  content: true,
+})
+
 export function CreateCommentForm({ articleId }: { articleId: Article['id'] }) {
   const createCommentMutation = useCreateComment({
     articleId,
@@ -18,14 +22,18 @@ export function CreateCommentForm({ articleId }: { articleId: Article['id'] }) {
   const form = useForm({
     defaultValues: {
       content: '',
-      articleId,
     },
     validators: {
-      onSubmit: createCommentInputSchema,
+      onSubmit: createCommentFormSchema,
     },
     onSubmit: ({ value }) => {
       createCommentMutation.mutate(
-        { data: value },
+        {
+          data: {
+            ...value,
+            articleId,
+          },
+        },
         {
           onSuccess: () => {
             toast.success('Comment created successfully!')

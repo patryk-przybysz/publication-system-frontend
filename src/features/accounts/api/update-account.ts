@@ -6,7 +6,11 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export const updateAccountInputSchema = z.object({
-  birth: z.string(),
+  birth: z
+    .string()
+    .trim()
+    .min(1, 'Birth date is required')
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Birth date must be a valid date'),
 })
 
 export type UpdateAccountInput = z.infer<typeof updateAccountInputSchema>

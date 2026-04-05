@@ -5,15 +5,23 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getArticlesQueryOptions } from './get-articles'
 
-const createArticleInputSchema = z.object({
-  title: z.string(),
-  content: z.string(),
-  requiredAge: z.number(),
-  requiredAccountAge: z.number(),
+const optionalNonNegativeInt = (message: string) =>
+  z
+    .string()
+    .transform((s) => (s.trim() === '' ? 0 : Number(s)))
+    .refine((n) => !Number.isNaN(n) && n >= 0 && Number.isInteger(n), message)
+
+export const createArticleInputSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required'),
+  content: z.string().trim().min(1, 'Content is required'),
+  requiredAge: optionalNonNegativeInt('Required age must be a valid number'),
+  requiredAccountAge: optionalNonNegativeInt(
+    'Required account age must be a valid number',
+  ),
   timeUnit: z.enum(['NULL', 'HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR']),
 })
 
-type CreateArticleInput = z.infer<typeof createArticleInputSchema>
+export type CreateArticleInput = z.infer<typeof createArticleInputSchema>
 
 const createArticle = ({
   data,

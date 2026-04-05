@@ -2,41 +2,57 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import type { Article } from '@/types/api'
-import { useState } from 'react'
+import { formatFieldErrors } from '@/utils/field-error'
+import { useForm } from '@tanstack/react-form'
 import { toast } from 'sonner'
-import { useCreateComment } from '../api/create-comment'
+import {
+  createCommentInputSchema,
+  useCreateComment,
+} from '../api/create-comment'
+
+const createCommentFormSchema = createCommentInputSchema.pick({
+  content: true,
+})
 
 export function CreateCommentForm({ articleId }: { articleId: Article['id'] }) {
-  const [content, setContent] = useState('')
-
   const createCommentMutation = useCreateComment({
     articleId,
-    mutationConfig: {
-      onSuccess: () => {
-        toast.success('Comment created successfully!')
-        setContent('')
-      },
+  })
+
+  const form = useForm({
+    defaultValues: {
+      content: '',
+    },
+    validators: {
+      onSubmit: createCommentFormSchema,
+    },
+    onSubmit: ({ value }) => {
+      createCommentMutation.mutate(
+        {
+          data: {
+            ...value,
+            articleId,
+          },
+        },
+        {
+          onSuccess: () => {
+            toast.success('Comment created successfully!')
+            form.reset()
+          },
+        },
+      )
     },
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!content.trim()) {
-      toast.error('Comment content is required')
-      return
-    }
-
-    createCommentMutation.mutate({
-      data: {
-        content: content.trim(),
-        articleId,
-      },
-    })
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        void form.handleSubmit()
+      }}
+      className="space-y-4"
+    >
       <div>
         <label
           htmlFor="comment-content"
@@ -44,30 +60,50 @@ export function CreateCommentForm({ articleId }: { articleId: Article['id'] }) {
         >
           Add a comment
         </label>
-        <Textarea
-          id="comment-content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Share your thoughts about this article..."
-          rows={3}
-          className="resize-none"
-        />
+        <form.Field name="content">
+          {(field) => (
+            <div>
+              <Textarea
+                id="comment-content"
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Share your thoughts about this article..."
+                rows={3}
+                className="resize-none"
+                aria-invalid={!field.state.meta.isValid}
+              />
+              {!field.state.meta.isValid ? (
+                <p className="text-sm text-destructive mt-1">
+                  {formatFieldErrors(field.state.meta.errors)}
+                </p>
+              ) : null}
+            </div>
+          )}
+        </form.Field>
       </div>
       <div className="flex justify-between items-center">
-        <Button
-          type="submit"
-          size="sm"
-          disabled={createCommentMutation.isPending || !content.trim()}
-        >
-          {createCommentMutation.isPending ? (
-            <>
-              <Spinner size="small" className="mr-2" />
-              Posting...
-            </>
-          ) : (
-            'Post Comment'
+        <form.Subscribe selector={(state) => state.values}>
+          {(values) => (
+            <Button
+              type="submit"
+              size="sm"
+              disabled={
+                createCommentMutation.isPending || !values.content.trim()
+              }
+            >
+              {createCommentMutation.isPending ? (
+                <>
+                  <Spinner size="small" className="mr-2" />
+                  Posting...
+                </>
+              ) : (
+                'Post Comment'
+              )}
+            </Button>
           )}
-        </Button>
+        </form.Subscribe>
       </div>
     </form>
   )

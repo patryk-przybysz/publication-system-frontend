@@ -8,8 +8,9 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useRegister } from '@/lib/auth'
-import { useState } from 'react'
+import { registerInputSchema, useRegister } from '@/lib/auth'
+import { formatFieldErrors } from '@/utils/field-error'
+import { useForm } from '@tanstack/react-form'
 
 interface RegisterFormProps {
   onSuccess?: () => void
@@ -25,16 +26,20 @@ export function RegisterForm({
       onSuccess?.()
     },
   })
-  const [credentials, setCredentials] = useState({
-    username: '',
-    password: '',
-    birth: '',
-  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    registerMutation.mutate(credentials)
-  }
+  const form = useForm({
+    defaultValues: {
+      username: '',
+      password: '',
+      birth: '',
+    },
+    validators: {
+      onSubmit: registerInputSchema,
+    },
+    onSubmit: ({ value }) => {
+      registerMutation.mutate(value)
+    },
+  })
 
   return (
     <Card className="w-full max-w-md">
@@ -43,51 +48,78 @@ export function RegisterForm({
         <CardDescription>Create a new account to get started</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="register-username">Username</Label>
-            <Input
-              id="register-username"
-              type="text"
-              value={credentials.username}
-              onChange={(e) =>
-                setCredentials((prev) => ({
-                  ...prev,
-                  username: e.target.value,
-                }))
-              }
-              required
-              placeholder="Choose a username"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="register-password">Password</Label>
-            <Input
-              id="register-password"
-              type="password"
-              value={credentials.password}
-              onChange={(e) =>
-                setCredentials((prev) => ({
-                  ...prev,
-                  password: e.target.value,
-                }))
-              }
-              required
-              placeholder="Create a password"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="birth">Birth Date</Label>
-            <Input
-              id="birth"
-              type="date"
-              value={credentials.birth}
-              onChange={(e) =>
-                setCredentials((prev) => ({ ...prev, birth: e.target.value }))
-              }
-              required
-            />
-          </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            void form.handleSubmit()
+          }}
+          className="space-y-4"
+        >
+          <form.Field name="username">
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor="register-username">Username</Label>
+                <Input
+                  id="register-username"
+                  type="text"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Choose a username"
+                  aria-invalid={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? (
+                  <p className="text-sm text-destructive">
+                    {formatFieldErrors(field.state.meta.errors)}
+                  </p>
+                ) : null}
+              </div>
+            )}
+          </form.Field>
+          <form.Field name="password">
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor="register-password">Password</Label>
+                <Input
+                  id="register-password"
+                  type="password"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Create a password"
+                  aria-invalid={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? (
+                  <p className="text-sm text-destructive">
+                    {formatFieldErrors(field.state.meta.errors)}
+                  </p>
+                ) : null}
+              </div>
+            )}
+          </form.Field>
+          <form.Field name="birth">
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor="birth">Birth Date</Label>
+                <Input
+                  id="birth"
+                  type="date"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? (
+                  <p className="text-sm text-destructive">
+                    {formatFieldErrors(field.state.meta.errors)}
+                  </p>
+                ) : null}
+              </div>
+            )}
+          </form.Field>
           <Button
             type="submit"
             className="w-full"

@@ -2,8 +2,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatFullDate } from '@/utils/date'
+import { formatFieldErrors } from '@/utils/field-error'
+import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
-import { useUpdateAccount } from '../api/update-account'
+import {
+  updateAccountInputSchema,
+  useUpdateAccount,
+} from '../api/update-account'
 
 type ProfileBirthDateEditorProps = {
   username: string
@@ -16,72 +21,91 @@ export function ProfileBirthDateEditor({
   initialDate,
   onSuccess,
 }: ProfileBirthDateEditorProps) {
-  const [editedDate, setEditedDate] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
-
-  const displayDate = editedDate ?? initialDate
 
   const updateAccountMutation = useUpdateAccount({
     mutationConfig: {
       onSuccess: () => {
-        setEditedDate(null)
         setIsEditing(false)
         onSuccess?.()
       },
     },
   })
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    if (!displayDate.trim()) return
-
-    updateAccountMutation.mutate({
-      username,
-      data: {
-        birth: displayDate,
-      },
-    })
-  }
+  const form = useForm({
+    defaultValues: {
+      birth: initialDate,
+    },
+    validators: {
+      onSubmit: updateAccountInputSchema,
+    },
+    onSubmit: ({ value }) => {
+      updateAccountMutation.mutate({ username, data: value })
+    },
+  })
 
   const handleCancel = () => {
-    setEditedDate(null)
+    form.reset({ birth: initialDate })
     setIsEditing(false)
   }
 
   const handleStartEdit = () => {
+    form.reset({ birth: initialDate })
     setIsEditing(true)
   }
 
   if (isEditing) {
     return (
       <div>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <Label
-              htmlFor="birth-date"
-              className="text-sm font-medium text-muted-foreground"
-            >
-              Birth Date
-            </Label>
-            <Input
-              id="birth-date"
-              type="date"
-              value={displayDate}
-              onChange={(e) => setEditedDate(e.target.value)}
-              required
-              className="mt-1"
-            />
-          </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            void form.handleSubmit()
+          }}
+          className="space-y-3"
+        >
+          <form.Field name="birth">
+            {(field) => (
+              <div>
+                <Label
+                  htmlFor="birth-date"
+                  className="text-sm font-medium text-muted-foreground"
+                >
+                  Birth Date
+                </Label>
+                <Input
+                  id="birth-date"
+                  type="date"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="mt-1"
+                  aria-invalid={!field.state.meta.isValid}
+                />
+                {!field.state.meta.isValid ? (
+                  <p className="text-sm text-destructive mt-1">
+                    {formatFieldErrors(field.state.meta.errors)}
+                  </p>
+                ) : null}
+              </div>
+            )}
+          </form.Field>
           <div className="flex gap-2">
-            <Button
-              type="submit"
-              size="sm"
-              disabled={updateAccountMutation.isPending || !displayDate.trim()}
-              className="h-8 px-3 text-xs"
-            >
-              {updateAccountMutation.isPending ? 'Saving...' : 'Save'}
-            </Button>
+            <form.Subscribe selector={(state) => state.values}>
+              {(values) => (
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={
+                    updateAccountMutation.isPending || !values.birth.trim()
+                  }
+                  className="h-8 px-3 text-xs"
+                >
+                  {updateAccountMutation.isPending ? 'Saving...' : 'Save'}
+                </Button>
+              )}
+            </form.Subscribe>
             <Button
               type="button"
               variant="outline"
@@ -102,7 +126,7 @@ export function ProfileBirthDateEditor({
     <div>
       <dt className="text-sm font-medium text-muted-foreground">Birth Date</dt>
       <dd className="mt-1 text-lg flex items-center gap-2">
-        <span>{formatFullDate(displayDate)}</span>
+        <span>{formatFullDate(initialDate)}</span>
         <Button
           variant="outline"
           size="sm"

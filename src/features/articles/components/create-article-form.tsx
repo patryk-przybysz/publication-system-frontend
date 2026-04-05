@@ -18,42 +18,55 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Textarea } from '@/components/ui/textarea'
-import { useCreateArticle } from '@/features/articles/api/create-article'
+import {
+  createArticleInputSchema,
+  useCreateArticle,
+} from '@/features/articles/api/create-article'
+import { formatFieldErrors } from '@/utils/field-error'
+import { useForm, useStore } from '@tanstack/react-form'
 import { Plus } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
+import type { z } from 'zod'
+
+type FormValues = z.input<typeof createArticleInputSchema>
 
 export function CreateArticleForm() {
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [requiredAge, setRequiredAge] = useState('')
-  const [requiredAccountAge, setRequiredAccountAge] = useState('')
-  const [timeUnit, setTimeUnit] = useState<
-    'NULL' | 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
-  >('DAY')
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-  const [isDirty, setIsDirty] = useState(false)
 
-  // Track if form is dirty
-  useEffect(() => {
-    const hasContent = Boolean(
-      title.trim() ||
-        content.trim() ||
-        requiredAge ||
-        requiredAccountAge ||
-        timeUnit !== 'DAY',
-    )
-    setIsDirty(hasContent)
-  }, [title, content, requiredAge, requiredAccountAge, timeUnit])
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      content: '',
+      requiredAge: '',
+      requiredAccountAge: '',
+      timeUnit: 'DAY',
+    },
+    validators: {
+      onSubmit: createArticleInputSchema,
+    },
+    onSubmit: ({ value }) => {
+      const parsed = createArticleInputSchema.safeParse(value)
+      if (!parsed.success) return
+      createArticleMutation.mutate({ data: parsed.data })
+    },
+  })
+
+  const createArticleMutation = useCreateArticle({
+    mutationConfig: {
+      onSuccess: () => {
+        toast.success('Article created successfully!')
+        setOpen(false)
+        form.reset()
+      },
+    },
+  })
+
+  const isDirty = useStore(form.store, (s) => s.isDirty)
 
   const resetForm = () => {
-    setTitle('')
-    setContent('')
-    setRequiredAge('')
-    setRequiredAccountAge('')
-    setTimeUnit('DAY')
-    setIsDirty(false)
+    form.reset()
   }
 
   const handleClose = () => {
@@ -72,51 +85,6 @@ export function CreateArticleForm() {
 
   const cancelClose = () => {
     setShowConfirmDialog(false)
-  }
-
-  const createArticleMutation = useCreateArticle({
-    mutationConfig: {
-      onSuccess: () => {
-        toast.success('Article created successfully!')
-        setOpen(false)
-        resetForm()
-      },
-    },
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!title.trim() || !content.trim()) {
-      toast.error('Title and content are required')
-      return
-    }
-
-    const ageValue = requiredAge ? Number(requiredAge) : 0
-    const accountAgeValue = requiredAccountAge ? Number(requiredAccountAge) : 0
-
-    if (requiredAge && (Number.isNaN(ageValue) || ageValue < 0)) {
-      toast.error('Required age must be a valid number')
-      return
-    }
-
-    if (
-      requiredAccountAge &&
-      (Number.isNaN(accountAgeValue) || accountAgeValue < 0)
-    ) {
-      toast.error('Required account age must be a valid number')
-      return
-    }
-
-    createArticleMutation.mutate({
-      data: {
-        title: title.trim(),
-        content: content.trim(),
-        requiredAge: ageValue,
-        requiredAccountAge: accountAgeValue,
-        timeUnit,
-      },
-    })
   }
 
   return (
@@ -142,109 +110,169 @@ export function CreateArticleForm() {
             <SheetTitle>Create New Article</SheetTitle>
           </SheetHeader>
 
-          <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              void form.handleSubmit()
+            }}
+            className="flex flex-col h-full"
+          >
             <div className="flex-1 space-y-6 px-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Enter article title"
-                  required
-                />
-              </div>
+              <form.Field name="title">
+                {(field) => (
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Title</Label>
+                    <Input
+                      id="title"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Enter article title"
+                      aria-invalid={!field.state.meta.isValid}
+                    />
+                    {!field.state.meta.isValid ? (
+                      <p className="text-sm text-destructive">
+                        {formatFieldErrors(field.state.meta.errors)}
+                      </p>
+                    ) : null}
+                  </div>
+                )}
+              </form.Field>
 
-              <div className="space-y-2">
-                <Label htmlFor="content">Content</Label>
-                <Textarea
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Enter article content"
-                  rows={12}
-                  required
-                  className="min-h-[300px] resize-none"
-                />
-              </div>
+              <form.Field name="content">
+                {(field) => (
+                  <div className="space-y-2">
+                    <Label htmlFor="content">Content</Label>
+                    <Textarea
+                      id="content"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Enter article content"
+                      rows={12}
+                      className="min-h-[300px] resize-none"
+                      aria-invalid={!field.state.meta.isValid}
+                    />
+                    {!field.state.meta.isValid ? (
+                      <p className="text-sm text-destructive">
+                        {formatFieldErrors(field.state.meta.errors)}
+                      </p>
+                    ) : null}
+                  </div>
+                )}
+              </form.Field>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="requiredAge">Required Age (optional)</Label>
-                  <Input
-                    id="requiredAge"
-                    type="number"
-                    min="0"
-                    value={requiredAge}
-                    onChange={(e) => setRequiredAge(e.target.value)}
-                    placeholder="e.g., 18"
-                  />
-                </div>
+                <form.Field name="requiredAge">
+                  {(field) => (
+                    <div className="space-y-2">
+                      <Label htmlFor="requiredAge">
+                        Required Age (optional)
+                      </Label>
+                      <Input
+                        id="requiredAge"
+                        type="number"
+                        min="0"
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder="e.g., 18"
+                        aria-invalid={!field.state.meta.isValid}
+                      />
+                      {!field.state.meta.isValid ? (
+                        <p className="text-sm text-destructive">
+                          {formatFieldErrors(field.state.meta.errors)}
+                        </p>
+                      ) : null}
+                    </div>
+                  )}
+                </form.Field>
 
-                <div className="space-y-2">
-                  <Label htmlFor="requiredAccountAge">
-                    Required Account Age (optional)
-                  </Label>
-                  <Input
-                    id="requiredAccountAge"
-                    type="number"
-                    min="0"
-                    value={requiredAccountAge}
-                    onChange={(e) => setRequiredAccountAge(e.target.value)}
-                    placeholder="e.g., 30"
-                  />
-                </div>
+                <form.Field name="requiredAccountAge">
+                  {(field) => (
+                    <div className="space-y-2">
+                      <Label htmlFor="requiredAccountAge">
+                        Required Account Age (optional)
+                      </Label>
+                      <Input
+                        id="requiredAccountAge"
+                        type="number"
+                        min="0"
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder="e.g., 30"
+                        aria-invalid={!field.state.meta.isValid}
+                      />
+                      {!field.state.meta.isValid ? (
+                        <p className="text-sm text-destructive">
+                          {formatFieldErrors(field.state.meta.errors)}
+                        </p>
+                      ) : null}
+                    </div>
+                  )}
+                </form.Field>
               </div>
 
-              <div className="space-y-2 mb-4">
-                <Label htmlFor="timeUnit">Time Unit for Account Age</Label>
-                <select
-                  id="timeUnit"
-                  value={timeUnit}
-                  onChange={(e) =>
-                    setTimeUnit(
-                      e.target.value as
-                        | 'NULL'
-                        | 'HOUR'
-                        | 'DAY'
-                        | 'WEEK'
-                        | 'MONTH'
-                        | 'YEAR',
-                    )
-                  }
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="HOUR">Hours</option>
-                  <option value="DAY">Days</option>
-                  <option value="WEEK">Weeks</option>
-                  <option value="MONTH">Months</option>
-                  <option value="YEAR">Years</option>
-                </select>
-              </div>
+              <form.Field name="timeUnit">
+                {(field) => (
+                  <div className="space-y-2 mb-4">
+                    <Label htmlFor="timeUnit">Time Unit for Account Age</Label>
+                    <select
+                      id="timeUnit"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) =>
+                        field.handleChange(
+                          e.target.value as FormValues['timeUnit'],
+                        )
+                      }
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="HOUR">Hours</option>
+                      <option value="DAY">Days</option>
+                      <option value="WEEK">Weeks</option>
+                      <option value="MONTH">Months</option>
+                      <option value="YEAR">Years</option>
+                    </select>
+                  </div>
+                )}
+              </form.Field>
             </div>
 
-            <SheetFooter className="flex-shrink-0 border-t pt-4 bg-background">
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleClose}
-                  className="flex-1 h-11"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={
-                    createArticleMutation.isPending || !title || !content
-                  }
-                  className="flex-1 h-11"
-                >
-                  {createArticleMutation.isPending
-                    ? 'Creating...'
-                    : 'Create Article'}
-                </Button>
-              </div>
+            <SheetFooter className="shrink-0 border-t pt-4 bg-background">
+              <form.Subscribe selector={(state) => state.values}>
+                {(values) => (
+                  <div className="flex flex-col sm:flex-row gap-3 w-full">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleClose}
+                      className="flex-1 h-11"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={
+                        createArticleMutation.isPending ||
+                        !values.title.trim() ||
+                        !values.content.trim()
+                      }
+                      className="flex-1 h-11"
+                    >
+                      {createArticleMutation.isPending
+                        ? 'Creating...'
+                        : 'Create Article'}
+                    </Button>
+                  </div>
+                )}
+              </form.Subscribe>
             </SheetFooter>
           </form>
         </SheetContent>

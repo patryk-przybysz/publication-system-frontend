@@ -1,8 +1,13 @@
 import { Button } from '@/components/ui/button'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { formatFullDate } from '@/utils/date'
-import { formatFieldErrors } from '@/utils/field-error'
 import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
 import {
@@ -64,33 +69,34 @@ export function ProfileBirthDateEditor({
           }}
           className="space-y-3"
         >
-          <form.Field name="birth">
-            {(field) => (
-              <div>
-                <Label
-                  htmlFor="birth-date"
-                  className="text-sm font-medium text-muted-foreground"
-                >
-                  Birth Date
-                </Label>
-                <Input
-                  id="birth-date"
-                  type="date"
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  className="mt-1"
-                  aria-invalid={!field.state.meta.isValid}
-                />
-                {!field.state.meta.isValid ? (
-                  <p className="text-sm text-destructive mt-1">
-                    {formatFieldErrors(field.state.meta.errors)}
-                  </p>
-                ) : null}
-              </div>
-            )}
-          </form.Field>
+          <FieldGroup>
+            <form.Field name="birth">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor="birth-date">Birth Date</FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id="birth-date"
+                        type="date"
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="mt-1"
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid ? (
+                        <FieldError errors={field.state.meta.errors} />
+                      ) : null}
+                    </FieldContent>
+                  </Field>
+                )
+              }}
+            </form.Field>
+          </FieldGroup>
           <div className="flex gap-2">
             <form.Subscribe selector={(state) => state.values}>
               {(values) => (

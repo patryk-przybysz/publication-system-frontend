@@ -1,11 +1,16 @@
 import { Button } from '@/components/ui/button'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
 import { api } from '@/lib/api-client'
 import type { User } from '@/types/api'
 import { formatFullDate } from '@/utils/date'
-import { formatFieldErrors } from '@/utils/field-error'
 import { matchQueryStatus } from '@/utils/match-query'
 import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
@@ -63,31 +68,37 @@ function AdminBirthDateEditForm({
         }}
         className="space-y-2"
       >
-        <form.Field name="birth">
-          {(field) => (
-            <div>
-              <Label htmlFor={`birth-date-${username}`} className="text-xs">
-                <Calendar className="h-3 w-3 inline mr-1" />
-                Birth Date for {username}
-              </Label>
-              <Input
-                id={`birth-date-${username}`}
-                type="date"
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                className="h-8 text-xs"
-                aria-invalid={!field.state.meta.isValid}
-              />
-              {!field.state.meta.isValid ? (
-                <p className="text-xs text-destructive mt-1">
-                  {formatFieldErrors(field.state.meta.errors)}
-                </p>
-              ) : null}
-            </div>
-          )}
-        </form.Field>
+        <FieldGroup>
+          <form.Field name="birth">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={`birth-date-${username}`}>
+                    <Calendar className="h-3 w-3 inline mr-1" />
+                    Birth Date for {username}
+                  </FieldLabel>
+                  <FieldContent>
+                    <Input
+                      id={`birth-date-${username}`}
+                      type="date"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className="h-8 text-xs"
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid ? (
+                      <FieldError errors={field.state.meta.errors} />
+                    ) : null}
+                  </FieldContent>
+                </Field>
+              )
+            }}
+          </form.Field>
+        </FieldGroup>
         <div className="flex gap-1">
           <form.Subscribe selector={(state) => state.values}>
             {(values) => (

@@ -6,10 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { registerInputSchema, useRegister } from '@/lib/auth'
-import { formatFieldErrors } from '@/utils/field-error'
 import { useForm } from '@tanstack/react-form'
 
 interface RegisterFormProps {
@@ -55,71 +60,89 @@ export function RegisterForm({
           }}
           className="space-y-4"
         >
-          <form.Field name="username">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor="register-username">Username</Label>
-                <Input
-                  id="register-username"
-                  type="text"
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Choose a username"
-                  aria-invalid={!field.state.meta.isValid}
-                />
-                {!field.state.meta.isValid ? (
-                  <p className="text-sm text-destructive">
-                    {formatFieldErrors(field.state.meta.errors)}
-                  </p>
-                ) : null}
-              </div>
-            )}
-          </form.Field>
-          <form.Field name="password">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor="register-password">Password</Label>
-                <Input
-                  id="register-password"
-                  type="password"
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Create a password"
-                  aria-invalid={!field.state.meta.isValid}
-                />
-                {!field.state.meta.isValid ? (
-                  <p className="text-sm text-destructive">
-                    {formatFieldErrors(field.state.meta.errors)}
-                  </p>
-                ) : null}
-              </div>
-            )}
-          </form.Field>
-          <form.Field name="birth">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor="birth">Birth Date</Label>
-                <Input
-                  id="birth"
-                  type="date"
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={!field.state.meta.isValid}
-                />
-                {!field.state.meta.isValid ? (
-                  <p className="text-sm text-destructive">
-                    {formatFieldErrors(field.state.meta.errors)}
-                  </p>
-                ) : null}
-              </div>
-            )}
-          </form.Field>
+          <FieldGroup>
+            <form.Field name="username">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor="register-username">
+                      Username
+                    </FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id="register-username"
+                        type="text"
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder="Choose a username"
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid ? (
+                        <FieldError errors={field.state.meta.errors} />
+                      ) : null}
+                    </FieldContent>
+                  </Field>
+                )
+              }}
+            </form.Field>
+            <form.Field name="password">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor="register-password">
+                      Password
+                    </FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id="register-password"
+                        type="password"
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder="Create a password"
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid ? (
+                        <FieldError errors={field.state.meta.errors} />
+                      ) : null}
+                    </FieldContent>
+                  </Field>
+                )
+              }}
+            </form.Field>
+            <form.Field name="birth">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor="birth">Birth Date</FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id="birth"
+                        type="date"
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid ? (
+                        <FieldError errors={field.state.meta.errors} />
+                      ) : null}
+                    </FieldContent>
+                  </Field>
+                )
+              }}
+            </form.Field>
+          </FieldGroup>
           <Button
             type="submit"
             className="w-full"

@@ -1,8 +1,14 @@
 import { Button } from '@/components/ui/button'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import type { Article } from '@/types/api'
-import { formatFieldErrors } from '@/utils/field-error'
 import { useForm } from '@tanstack/react-form'
 import { toast } from 'sonner'
 import {
@@ -53,36 +59,35 @@ export function CreateCommentForm({ articleId }: { articleId: Article['id'] }) {
       }}
       className="space-y-4"
     >
-      <div>
-        <label
-          htmlFor="comment-content"
-          className="text-sm font-medium mb-2 block"
-        >
-          Add a comment
-        </label>
+      <FieldGroup>
         <form.Field name="content">
-          {(field) => (
-            <div>
-              <Textarea
-                id="comment-content"
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Share your thoughts about this article..."
-                rows={3}
-                className="resize-none"
-                aria-invalid={!field.state.meta.isValid}
-              />
-              {!field.state.meta.isValid ? (
-                <p className="text-sm text-destructive mt-1">
-                  {formatFieldErrors(field.state.meta.errors)}
-                </p>
-              ) : null}
-            </div>
-          )}
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor="comment-content">Add a comment</FieldLabel>
+                <FieldContent>
+                  <Textarea
+                    id="comment-content"
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Share your thoughts about this article..."
+                    rows={3}
+                    className="resize-none"
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid ? (
+                    <FieldError errors={field.state.meta.errors} />
+                  ) : null}
+                </FieldContent>
+              </Field>
+            )
+          }}
         </form.Field>
-      </div>
+      </FieldGroup>
       <div className="flex justify-between items-center">
         <form.Subscribe selector={(state) => state.values}>
           {(values) => (

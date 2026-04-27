@@ -7,8 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Sheet,
   SheetContent,
@@ -22,7 +28,6 @@ import {
   createArticleInputSchema,
   useCreateArticle,
 } from '@/features/articles/api/create-article'
-import { formatFieldErrors } from '@/utils/field-error'
 import { useForm, useStore } from '@tanstack/react-form'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
@@ -118,130 +123,160 @@ export function CreateArticleForm() {
             className="flex flex-col h-full"
           >
             <div className="flex-1 space-y-6 px-4">
-              <form.Field name="title">
-                {(field) => (
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Title</Label>
-                    <Input
-                      id="title"
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Enter article title"
-                      aria-invalid={!field.state.meta.isValid}
-                    />
-                    {!field.state.meta.isValid ? (
-                      <p className="text-sm text-destructive">
-                        {formatFieldErrors(field.state.meta.errors)}
-                      </p>
-                    ) : null}
-                  </div>
-                )}
-              </form.Field>
+              <FieldGroup>
+                <form.Field name="title">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <FieldLabel htmlFor="title">Title</FieldLabel>
+                        <FieldContent>
+                          <Input
+                            id="title"
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder="Enter article title"
+                            aria-invalid={isInvalid}
+                          />
+                          {isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null}
+                        </FieldContent>
+                      </Field>
+                    )
+                  }}
+                </form.Field>
 
-              <form.Field name="content">
-                {(field) => (
-                  <div className="space-y-2">
-                    <Label htmlFor="content">Content</Label>
-                    <Textarea
-                      id="content"
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Enter article content"
-                      rows={12}
-                      className="min-h-[300px] resize-none"
-                      aria-invalid={!field.state.meta.isValid}
-                    />
-                    {!field.state.meta.isValid ? (
-                      <p className="text-sm text-destructive">
-                        {formatFieldErrors(field.state.meta.errors)}
-                      </p>
-                    ) : null}
-                  </div>
-                )}
-              </form.Field>
+                <form.Field name="content">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <FieldLabel htmlFor="content">Content</FieldLabel>
+                        <FieldContent>
+                          <Textarea
+                            id="content"
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder="Enter article content"
+                            rows={12}
+                            className="min-h-[300px] resize-none"
+                            aria-invalid={isInvalid}
+                          />
+                          {isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null}
+                        </FieldContent>
+                      </Field>
+                    )
+                  }}
+                </form.Field>
+              </FieldGroup>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <form.Field name="requiredAge">
-                  {(field) => (
-                    <div className="space-y-2">
-                      <Label htmlFor="requiredAge">
-                        Required Age (optional)
-                      </Label>
-                      <Input
-                        id="requiredAge"
-                        type="number"
-                        min="0"
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="e.g., 18"
-                        aria-invalid={!field.state.meta.isValid}
-                      />
-                      {!field.state.meta.isValid ? (
-                        <p className="text-sm text-destructive">
-                          {formatFieldErrors(field.state.meta.errors)}
-                        </p>
-                      ) : null}
-                    </div>
-                  )}
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <FieldLabel htmlFor="requiredAge">
+                          Required Age (optional)
+                        </FieldLabel>
+                        <FieldContent>
+                          <Input
+                            id="requiredAge"
+                            type="number"
+                            min="0"
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder="e.g., 18"
+                            aria-invalid={isInvalid}
+                          />
+                          {isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null}
+                        </FieldContent>
+                      </Field>
+                    )
+                  }}
                 </form.Field>
 
                 <form.Field name="requiredAccountAge">
-                  {(field) => (
-                    <div className="space-y-2">
-                      <Label htmlFor="requiredAccountAge">
-                        Required Account Age (optional)
-                      </Label>
-                      <Input
-                        id="requiredAccountAge"
-                        type="number"
-                        min="0"
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="e.g., 30"
-                        aria-invalid={!field.state.meta.isValid}
-                      />
-                      {!field.state.meta.isValid ? (
-                        <p className="text-sm text-destructive">
-                          {formatFieldErrors(field.state.meta.errors)}
-                        </p>
-                      ) : null}
-                    </div>
-                  )}
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <FieldLabel htmlFor="requiredAccountAge">
+                          Required Account Age (optional)
+                        </FieldLabel>
+                        <FieldContent>
+                          <Input
+                            id="requiredAccountAge"
+                            type="number"
+                            min="0"
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder="e.g., 30"
+                            aria-invalid={isInvalid}
+                          />
+                          {isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null}
+                        </FieldContent>
+                      </Field>
+                    )
+                  }}
                 </form.Field>
               </div>
 
               <form.Field name="timeUnit">
-                {(field) => (
-                  <div className="space-y-2 mb-4">
-                    <Label htmlFor="timeUnit">Time Unit for Account Age</Label>
-                    <select
-                      id="timeUnit"
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) =>
-                        field.handleChange(
-                          e.target.value as FormValues['timeUnit'],
-                        )
-                      }
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="HOUR">Hours</option>
-                      <option value="DAY">Days</option>
-                      <option value="WEEK">Weeks</option>
-                      <option value="MONTH">Months</option>
-                      <option value="YEAR">Years</option>
-                    </select>
-                  </div>
-                )}
+                {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid
+                  return (
+                    <Field data-invalid={isInvalid} className="mb-4">
+                      <FieldLabel htmlFor="timeUnit">
+                        Time Unit for Account Age
+                      </FieldLabel>
+                      <FieldContent>
+                        <select
+                          id="timeUnit"
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(e) =>
+                            field.handleChange(
+                              e.target.value as FormValues['timeUnit'],
+                            )
+                          }
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
+                          aria-invalid={isInvalid}
+                        >
+                          <option value="HOUR">Hours</option>
+                          <option value="DAY">Days</option>
+                          <option value="WEEK">Weeks</option>
+                          <option value="MONTH">Months</option>
+                          <option value="YEAR">Years</option>
+                        </select>
+                        {isInvalid ? (
+                          <FieldError errors={field.state.meta.errors} />
+                        ) : null}
+                      </FieldContent>
+                    </Field>
+                  )
+                }}
               </form.Field>
             </div>
 

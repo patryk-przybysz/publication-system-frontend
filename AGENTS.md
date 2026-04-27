@@ -22,6 +22,10 @@
   - **Note**: The global `api` client already intercepts errors and triggers `sonner` toasts for standard HTTP codes (401, 403, 404, etc.). Avoid writing redundant `try/catch` toast logic in components unless custom error handling is required.
 - **Forms**:
   - Uses `@tanstack/react-form` with Zod schemas colocated with mutations (e.g. `create-article.ts`, `update-account.ts`, `src/lib/auth.tsx` for login/register). Validators use Zod’s Standard Schema support.
+  - Prefer the shadcn TanStack Form pattern with `Field` primitives from `@/components/ui/field` (`Field`, `FieldLabel`, `FieldContent`, `FieldError`, `FieldGroup`) inside `form.Field` render callbacks.
+  - In `form.Field`, compute `const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid` once and reuse it for `data-invalid`, `aria-invalid`, and conditional `FieldError` rendering.
+  - Keep `useForm({ onSubmit })` focused on form orchestration (collect/transform values and trigger mutation).
+  - Put domain-wide side effects (query invalidation, shared defaults) in mutation hooks (`useXxx` in `features/*/api`), and keep view-local UI effects (close dialog/sheet, reset form, edit-mode toggles) in per-call `mutate(..., { onSuccess })` handlers.
 - **Access Control (RBAC/ABAC)**:
   - This frontend strongly features Role-Based and Attribute-Based Access Control.
   - Core logic and hooks for permissions reside in `src/lib/authorization.tsx` and `src/utils/permissions.ts`. Refer to these files when modifying user access flows.

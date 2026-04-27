@@ -1,0 +1,56 @@
+---
+description: TanStack Form and shadcn Field conventions for project forms
+globs:
+alwaysApply: false
+---
+
+# Form Conventions
+
+Use this project pattern for form components across the application.
+
+## Core Stack
+
+- Use `@tanstack/react-form` for form state.
+- Use Zod schemas colocated with feature API/auth modules.
+- Prefer shadcn `Field` primitives from `@/components/ui/field`:
+  - `Field`
+  - `FieldLabel`
+  - `FieldContent`
+  - `FieldError`
+  - `FieldGroup`
+
+## Field Rendering Pattern
+
+Inside each `form.Field` render callback:
+
+1. Compute invalid state once:
+
+```tsx
+const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+```
+
+2. Reuse `isInvalid` for:
+
+   - `data-invalid` on `Field`
+   - `aria-invalid` on inputs
+   - conditional `FieldError` rendering
+
+3. Keep field markup explicit (avoid custom global form wrappers unless justified).
+
+## Submit and Side Effects
+
+- Keep `useForm({ onSubmit })` focused on form orchestration:
+  - collect/transform values
+  - call the mutation
+- Keep shared/domain side effects in mutation hooks (`features/*/api`):
+  - query invalidation
+  - default shared behavior
+- Keep view-local UI side effects in per-call handlers:
+  - `mutate(payload, { onSuccess, onError })`
+  - e.g. close dialog/sheet, reset form, edit-mode toggles
+
+## Avoid
+
+- Mixing ad hoc field layouts in one form (stick to one pattern per file).
+- Duplicating the invalid expression multiple times in the same field block.
+- Putting local UI behavior as default logic in shared mutation hooks.

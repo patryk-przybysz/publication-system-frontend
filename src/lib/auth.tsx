@@ -1,6 +1,5 @@
 import type { User } from '@/types/api'
 import {
-  type UseMutationOptions,
   queryOptions,
   useMutation,
   useQuery,
@@ -110,55 +109,66 @@ export function useUser(options?: QueryConfig<typeof getUserQueryOptions>) {
   })
 }
 
-export function useLogin(options?: MutationConfig<typeof loginFn>) {
+type UseLoginOptions = {
+  mutationConfig?: MutationConfig<typeof loginFn>
+}
+
+export function useLogin({ mutationConfig = {} }: UseLoginOptions = {}) {
   const queryClient = useQueryClient()
+  const { onSettled, onError, ...restConfig } = mutationConfig
 
   return useMutation({
     mutationFn: loginFn,
-    ...options,
-    onSettled: (...rest) => {
+    onSettled: (...args) => {
       queryClient.invalidateQueries()
-      options?.onSettled?.(...rest)
+      onSettled?.(...args)
     },
-    onError: (...rest) => {
+    onError: (...args) => {
       authStorage.remove()
-      options?.onError?.(...rest)
+      onError?.(...args)
     },
+    ...restConfig,
   })
 }
 
-export function useRegister(options?: MutationConfig<typeof registerFn>) {
+type UseRegisterOptions = {
+  mutationConfig?: MutationConfig<typeof registerFn>
+}
+
+export function useRegister({ mutationConfig = {} }: UseRegisterOptions = {}) {
   const queryClient = useQueryClient()
+  const { onSuccess, onError, ...restConfig } = mutationConfig
 
   return useMutation({
     mutationFn: registerFn,
-    ...options,
-    onSuccess: (data, ...rest) => {
+    onSuccess: (data, ...args) => {
       queryClient.invalidateQueries()
-      options?.onSuccess?.(data, ...rest)
+      onSuccess?.(data, ...args)
     },
-    onError: (error, ...rest) => {
+    onError: (error, ...args) => {
       authStorage.remove()
-      options?.onError?.(error, ...rest)
+      onError?.(error, ...args)
     },
+    ...restConfig,
   })
 }
 
-export function useLogout(
-  options?: Omit<UseMutationOptions<void, Error, void>, 'mutationFn'>,
-) {
+type UseLogoutOptions = {
+  mutationConfig?: MutationConfig<typeof logoutFn>
+}
+
+export function useLogout({ mutationConfig = {} }: UseLogoutOptions = {}) {
   const queryClient = useQueryClient()
+  const { onSuccess, ...restConfig } = mutationConfig
 
   return useMutation({
     mutationFn: logoutFn,
-    ...options,
-    onSuccess: (...rest) => {
+    onSuccess: (...args) => {
       queryClient.setQueryData(userKey, null)
-
       queryClient.invalidateQueries()
-
-      options?.onSuccess?.(...rest)
+      onSuccess?.(...args)
     },
+    ...restConfig,
   })
 }
 

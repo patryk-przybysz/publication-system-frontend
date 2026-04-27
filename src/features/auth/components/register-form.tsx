@@ -26,11 +26,7 @@ export function RegisterForm({
   onSuccess,
   onSwitchToLogin,
 }: RegisterFormProps) {
-  const registerMutation = useRegister({
-    onSuccess: () => {
-      onSuccess?.()
-    },
-  })
+  const registerMutation = useRegister()
 
   const form = useForm({
     defaultValues: {
@@ -42,7 +38,11 @@ export function RegisterForm({
       onSubmit: registerInputSchema,
     },
     onSubmit: ({ value }) => {
-      registerMutation.mutate(value)
+      registerMutation.mutate(value, {
+        onSuccess: () => {
+          onSuccess?.()
+        },
+      })
     },
   })
 

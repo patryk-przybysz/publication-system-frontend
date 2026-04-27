@@ -16,6 +16,7 @@ import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { Calendar, Edit2 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import {
   updateAccountInputSchema,
   useUpdateAccount,
@@ -39,13 +40,7 @@ function AdminBirthDateEditForm({
   onSuccess,
   onCancel,
 }: AdminBirthDateEditFormProps) {
-  const updateAccountMutation = useUpdateAccount({
-    mutationConfig: {
-      onSuccess: () => {
-        onSuccess?.()
-      },
-    },
-  })
+  const updateAccountMutation = useUpdateAccount()
 
   const form = useForm({
     defaultValues: {
@@ -55,7 +50,15 @@ function AdminBirthDateEditForm({
       onSubmit: updateAccountInputSchema,
     },
     onSubmit: ({ value }) => {
-      updateAccountMutation.mutate({ username, data: value })
+      updateAccountMutation.mutate(
+        { username, data: value },
+        {
+          onSuccess: () => {
+            toast.success('Birth date updated successfully')
+            onSuccess?.()
+          },
+        },
+      )
     },
   })
 

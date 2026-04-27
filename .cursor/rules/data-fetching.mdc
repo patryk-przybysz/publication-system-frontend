@@ -96,14 +96,16 @@ export const useEntities = ({
 ```
 
 ## Mutation Pattern
-For POST/PUT/DELETE requests, follow this structure:
+For POST/PUT/DELETE requests, follow this structure. The hook owns ONLY domain-wide
+side effects (scoped invalidation, cache writes, cross-caller defaults); view-local
+UI behavior (toasts, dialog close, `form.reset`, edit-mode toggles, navigation)
+belongs in per-call `mutate(.., { onSuccess })` at the call site.
 
 ```typescript
-import { apiFetch } from '@/lib/api-client'
+import { api } from '@/lib/api-client'
 import type { MutationConfig } from '@/lib/react-query'
 import type { EntityDTO } from '@/types/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import { z } from 'zod'
 import { getEntitiesQueryOptions } from './get-entities'
 
@@ -122,68 +124,72 @@ export const createEntity = ({
 }: {
   data: CreateEntityInput
 }): Promise<EntityDTO> =>
-  apiFetch('/entities', {
+  api('/entities', {
+    method: 'POST',
     body: data,
   })
 
-// Hook for component usage
 type UseCreateEntityOptions = {
   mutationConfig?: MutationConfig<typeof createEntity>
 }
 
 export const useCreateEntity = ({
   mutationConfig,
-}: UseCreateEntityOptions) => {
+}: UseCreateEntityOptions = {}) => {
   const queryClient = useQueryClient()
 
-  const { onSuccess, onError, ...restConfig } = mutationConfig || {}
+  const { onSuccess, ...restConfig } = mutationConfig || {}
 
   return useMutation({
     mutationFn: createEntity,
     onSuccess: (data, ...args) => {
-      // Invalidate related queries
       queryClient.invalidateQueries({
         queryKey: getEntitiesQueryOptions().queryKey,
       })
-      
-      // Show success toast
-      toast.success(`Entity created successfully`)
-      
-      // Call custom onSuccess handler
       onSuccess?.(data, ...args)
-    },
-    onError: (error, ...args) => {
-      // Show error toast
-      toast.error(`Failed to create entity: ${error.message}`)
-      
-      // Call custom onError handler
-      onError?.(error, ...args)
     },
     ...restConfig,
   })
 }
 ```
 
+### Calling the mutation from a component (preferred per-call shape)
+
+```tsx
+const createEntityMutation = useCreateEntity()
+
+const form = useForm({
+  // ...
+  onSubmit: ({ value }) => {
+    createEntityMutation.mutate(
+      { data: value },
+      {
+        onSuccess: () => {
+          toast.success('Entity created successfully!')
+          setOpen(false)
+          form.reset()
+        },
+      },
+    )
+  },
+})
+```
+
 ## Error Handling
-Always use Sonner's `toast.success` and `toast.error` for user feedback:
+The `api` client in `src/lib/api-client.ts` already triggers `sonner` toasts for
+standard HTTP error codes (401, 403, 404, etc.). Do NOT add redundant `onError`
+toasts in mutation hooks or call sites unless the action requires custom copy.
 
-```typescript
-import { toast } from 'sonner'
+When you do need custom error UX, put it at the call site:
 
-// In mutation onSuccess
-toast.success(`Successfully created ${entityName}`)
-
-// In mutation onError
-toast.error(`Failed to create ${entityName}: ${error.message}`)
-
-// Custom error messages based on status
-onError: (error) => {
-  if (error.status === 409) {
-    toast.error('Entity already exists')
-  } else {
-    toast.error(`Failed to create entity: ${error.message}`)
-  }
-}
+```tsx
+mutation.mutate(payload, {
+  onError: (error) => {
+    if (error.status === 409) {
+      toast.error('Entity already exists')
+    }
+  },
+})
 ```
 
 ## Query Key Conventions

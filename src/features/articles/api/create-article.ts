@@ -38,11 +38,11 @@ type UseCreateArticleOptions = {
 }
 
 export const useCreateArticle = ({
-  mutationConfig,
-}: UseCreateArticleOptions) => {
+  mutationConfig = {},
+}: UseCreateArticleOptions = {}) => {
   const queryClient = useQueryClient()
 
-  const { onSuccess, ...restConfig } = mutationConfig || {}
+  const { onSuccess, ...restConfig } = mutationConfig
 
   return useMutation({
     onSuccess: (...args) => {

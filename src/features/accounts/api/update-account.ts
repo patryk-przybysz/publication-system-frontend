@@ -1,8 +1,8 @@
 import { api } from '@/lib/api-client'
+import { getUserQueryOptions } from '@/lib/auth'
 import type { MutationConfig } from '@/lib/react-query'
 import type { User } from '@/types/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 export const updateAccountInputSchema = z.object({
@@ -32,17 +32,19 @@ type UseUpdateAccountOptions = {
 }
 
 export const useUpdateAccount = ({
-  mutationConfig,
+  mutationConfig = {},
 }: UseUpdateAccountOptions = {}) => {
   const queryClient = useQueryClient()
 
-  const { onSuccess, onError, ...restConfig } = mutationConfig || {}
+  const { onSuccess, ...restConfig } = mutationConfig
 
   return useMutation({
     mutationFn: updateAccount,
     onSuccess: (data, variables, ...args) => {
-      queryClient.invalidateQueries()
-      toast.success('Birth date updated successfully')
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      queryClient.invalidateQueries({
+        queryKey: getUserQueryOptions().queryKey,
+      })
       onSuccess?.(data, variables, ...args)
     },
     ...restConfig,

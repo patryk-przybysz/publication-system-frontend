@@ -26,14 +26,14 @@ export function LogoutButton({
   showIcon = true,
   ...props
 }: LogoutButtonProps) {
-  const logoutMutation = useLogout({
-    onSuccess: onLogoutSuccess,
-    onError: onLogoutError,
-  })
+  const logoutMutation = useLogout()
 
   const handleLogout = () => {
     onLogoutStart?.()
-    logoutMutation.mutate()
+    logoutMutation.mutate(undefined, {
+      onSuccess: onLogoutSuccess,
+      onError: onLogoutError,
+    })
   }
 
   const defaultChildren = <>{showIcon && '🔒'} Logout</>

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { formatFullDate } from '@/utils/date'
 import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import {
   updateAccountInputSchema,
   useUpdateAccount,
@@ -28,14 +29,7 @@ export function ProfileBirthDateEditor({
 }: ProfileBirthDateEditorProps) {
   const [isEditing, setIsEditing] = useState(false)
 
-  const updateAccountMutation = useUpdateAccount({
-    mutationConfig: {
-      onSuccess: () => {
-        setIsEditing(false)
-        onSuccess?.()
-      },
-    },
-  })
+  const updateAccountMutation = useUpdateAccount()
 
   const form = useForm({
     defaultValues: {
@@ -45,7 +39,16 @@ export function ProfileBirthDateEditor({
       onSubmit: updateAccountInputSchema,
     },
     onSubmit: ({ value }) => {
-      updateAccountMutation.mutate({ username, data: value })
+      updateAccountMutation.mutate(
+        { username, data: value },
+        {
+          onSuccess: () => {
+            toast.success('Birth date updated successfully')
+            setIsEditing(false)
+            onSuccess?.()
+          },
+        },
+      )
     },
   })
 

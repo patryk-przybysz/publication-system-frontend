@@ -27,12 +27,12 @@ type UseDeleteCommentOptions = {
 }
 
 export const useDeleteComment = ({
-  mutationConfig,
+  mutationConfig = {},
   articleId,
 }: UseDeleteCommentOptions) => {
   const queryClient = useQueryClient()
 
-  const { onSuccess, ...restConfig } = mutationConfig || {}
+  const { onSuccess, ...restConfig } = mutationConfig
 
   return useMutation({
     onSuccess: (...args) => {

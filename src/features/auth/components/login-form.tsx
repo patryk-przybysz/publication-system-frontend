@@ -24,11 +24,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
-  const loginMutation = useLogin({
-    onSuccess: () => {
-      onSuccess?.()
-    },
-  })
+  const loginMutation = useLogin()
 
   const form = useForm({
     defaultValues: {
@@ -39,7 +35,11 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
       onSubmit: loginInputSchema,
     },
     onSubmit: ({ value }) => {
-      loginMutation.mutate(value)
+      loginMutation.mutate(value, {
+        onSuccess: () => {
+          onSuccess?.()
+        },
+      })
     },
   })
 

@@ -25,22 +25,22 @@ export function DeleteCommentButton({
   comment,
   articleId,
 }: DeleteCommentButtonProps) {
-  const deleteCommentMutation = useDeleteComment({
-    articleId,
-    mutationConfig: {
-      onSuccess: () => {
-        toast.success('Comment deleted successfully!')
-      },
-    },
-  })
+  const deleteCommentMutation = useDeleteComment({ articleId })
 
   const handleDelete = () => {
-    deleteCommentMutation.mutate({
-      data: {
-        commentId: comment.id,
-        articleId,
+    deleteCommentMutation.mutate(
+      {
+        data: {
+          commentId: comment.id,
+          articleId,
+        },
       },
-    })
+      {
+        onSuccess: () => {
+          toast.success('Comment deleted successfully!')
+        },
+      },
+    )
   }
 
   return (

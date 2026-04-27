@@ -25,7 +25,12 @@
   - Prefer the shadcn TanStack Form pattern with `Field` primitives from `@/components/ui/field` (`Field`, `FieldLabel`, `FieldContent`, `FieldError`, `FieldGroup`) inside `form.Field` render callbacks.
   - In `form.Field`, compute `const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid` once and reuse it for `data-invalid`, `aria-invalid`, and conditional `FieldError` rendering.
   - Keep `useForm({ onSubmit })` focused on form orchestration (collect/transform values and trigger mutation).
-  - Put domain-wide side effects (query invalidation, shared defaults) in mutation hooks (`useXxx` in `features/*/api`), and keep view-local UI effects (close dialog/sheet, reset form, edit-mode toggles) in per-call `mutate(..., { onSuccess })` handlers.
+- **Mutation success placement**:
+  - Mutation hooks under `features/*/api/*.ts` (and `src/lib/auth.tsx`) own only **domain-wide** side effects: scoped `queryClient.invalidateQueries({ queryKey: ... })` (avoid `invalidateQueries()` with no key), cache writes via `setQueryData`, and cross-caller defaults that must always run regardless of call site (e.g. `authStorage.remove()` on auth error). Hooks must always forward the caller's callbacks via `onSuccess?.(...args)` / `onError?.(...args)` / `onSettled?.(...args)` so per-call handlers compose.
+  - Hooks must NOT contain view-local behavior: action-specific toasts, `setOpen`, `form.reset()`, `setIsEditing`, navigation, or callbacks forwarded from props.
+  - In components, default to per-call `mutation.mutate(payload, { onSuccess })` for form submit and click handlers. This puts the side effect adjacent to the user intent and avoids stale prop closures captured by the mutation observer.
+  - Use `useXxx({ mutationConfig: { onSuccess } })` only when **every** mutation success in that component must run the same view-local behavior regardless of which call site fired it (rare here — most flows are single-submit).
+  - Edge cases: per-call callbacks may not run if the component unmounts before the mutation settles, or across overlapping `mutate()` calls. Mitigate by disabling Submit while `isPending` (already standard). When you need an unmount-proof success effect, lift it to the hook level or derive UI from `mutation.data` / `mutation.status`.
 - **Access Control (RBAC/ABAC)**:
   - This frontend strongly features Role-Based and Attribute-Based Access Control.
   - Core logic and hooks for permissions reside in `src/lib/authorization.tsx` and `src/utils/permissions.ts`. Refer to these files when modifying user access flows.

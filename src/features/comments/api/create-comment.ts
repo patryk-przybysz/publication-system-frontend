@@ -28,12 +28,12 @@ type UseCreateCommentOptions = {
 }
 
 export const useCreateComment = ({
-  mutationConfig,
+  mutationConfig = {},
   articleId,
 }: UseCreateCommentOptions) => {
   const queryClient = useQueryClient()
 
-  const { onSuccess, ...restConfig } = mutationConfig || {}
+  const { onSuccess, ...restConfig } = mutationConfig
 
   return useMutation({
     onSuccess: (...args) => {

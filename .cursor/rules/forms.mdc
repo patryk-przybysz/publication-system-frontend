@@ -43,14 +43,51 @@ const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   - collect/transform values
   - call the mutation
 - Keep shared/domain side effects in mutation hooks (`features/*/api`):
-  - query invalidation
-  - default shared behavior
-- Keep view-local UI side effects in per-call handlers:
+  - scoped `queryClient.invalidateQueries({ queryKey: ... })` (never call `invalidateQueries()` with no key)
+  - cache writes (`setQueryData`)
+  - cross-caller defaults that must always run (e.g. `authStorage.remove()` on auth error)
+  - hooks MUST forward caller callbacks via `onSuccess?.(...args)` / `onError?.(...args)` / `onSettled?.(...args)`
+- Keep view-local UI side effects in per-call handlers — this is the default for form submit:
   - `mutate(payload, { onSuccess, onError })`
-  - e.g. close dialog/sheet, reset form, edit-mode toggles
+  - close dialog/sheet (`setOpen(false)`)
+  - reset form (`form.reset()`)
+  - edit-mode toggles (`setIsEditing(false)`)
+  - action-specific toasts (`toast.success('Article created successfully!')`)
+  - navigation, prop callbacks forwarded from parent
+
+### When to choose hook-level `mutationConfig.onSuccess`
+
+Use `useXxx({ mutationConfig: { onSuccess } })` only when EVERY mutation success in that
+component must trigger the same behavior regardless of call site. Single-submit forms
+(the vast majority here) should use per-call. If the component may unmount mid-flight
+(e.g. user closes a dialog while pending) and you need a guaranteed side effect on
+success, lift it to the hook OR derive UI from `mutation.data` / `mutation.status`.
+
+### Example (preferred per-call shape)
+
+```tsx
+const createArticleMutation = useCreateArticle()
+
+const form = useForm({
+  // ...
+  onSubmit: ({ value }) => {
+    createArticleMutation.mutate(
+      { data: value },
+      {
+        onSuccess: () => {
+          toast.success('Article created successfully!')
+          setOpen(false)
+          form.reset()
+        },
+      },
+    )
+  },
+})
+```
 
 ## Avoid
 
 - Mixing ad hoc field layouts in one form (stick to one pattern per file).
 - Duplicating the invalid expression multiple times in the same field block.
-- Putting local UI behavior as default logic in shared mutation hooks.
+- Putting local UI behavior (toasts, dialog/sheet close, `form.reset`, edit-mode toggles, navigation) as default logic in shared mutation hooks.
+- Calling `queryClient.invalidateQueries()` with no `queryKey` — always scope invalidation.

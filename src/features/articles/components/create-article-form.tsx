@@ -40,6 +40,8 @@ export function CreateArticleForm() {
   const [open, setOpen] = useState(false)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 
+  const createArticleMutation = useCreateArticle()
+
   const form = useForm({
     defaultValues: {
       title: '',
@@ -54,17 +56,16 @@ export function CreateArticleForm() {
     onSubmit: ({ value }) => {
       const parsed = createArticleInputSchema.safeParse(value)
       if (!parsed.success) return
-      createArticleMutation.mutate({ data: parsed.data })
-    },
-  })
-
-  const createArticleMutation = useCreateArticle({
-    mutationConfig: {
-      onSuccess: () => {
-        toast.success('Article created successfully!')
-        setOpen(false)
-        form.reset()
-      },
+      createArticleMutation.mutate(
+        { data: parsed.data },
+        {
+          onSuccess: () => {
+            toast.success('Article created successfully!')
+            setOpen(false)
+            form.reset()
+          },
+        },
+      )
     },
   })
 

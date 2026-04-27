@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useUser } from '@/lib/auth'
+import { useCanEditAccount } from '@/lib/authorization'
 import type { AccountPublicDetails } from '@/types/api'
 import { getBadgeVariant, getRoleIcon } from '@/utils/user'
 import { Verified } from 'lucide-react'
@@ -11,8 +11,7 @@ type AccountDetailsCardProps = {
 }
 
 export function AccountDetailsCard({ account }: AccountDetailsCardProps) {
-  const { data: currentUser } = useUser()
-  const isAdmin = currentUser?.role === 'ADMIN'
+  const canEditAccount = useCanEditAccount(account.username)
 
   const RoleIcon = getRoleIcon(account.role)
 
@@ -24,7 +23,7 @@ export function AccountDetailsCard({ account }: AccountDetailsCardProps) {
           <span className="truncate">{account.username}</span>
           {account.verified && (
             <Verified
-              className="h-4 w-4 text-blue-500 flex-shrink-0"
+              className="h-4 w-4 text-blue-500 shrink-0"
               fill="currentColor"
             />
           )}
@@ -51,7 +50,7 @@ export function AccountDetailsCard({ account }: AccountDetailsCardProps) {
           </Badge>
         </div>
 
-        {isAdmin && (
+        {canEditAccount && (
           <div className="pt-2 border-t">
             <AdminBirthDateEditor username={account.username} />
           </div>

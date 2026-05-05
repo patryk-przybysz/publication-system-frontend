@@ -87,7 +87,7 @@ function ArticleComments({
                 {comments.length} comment
                 {comments.length !== 1 ? 's' : ''}
               </h4>
-              <ScrollArea className="h-[400px] w-full pr-4">
+              <ScrollArea className="h-100 w-full pr-4">
                 <div className="space-y-6">
                   {comments.map((comment, index) => {
                     const isCurrentUser =
@@ -133,7 +133,7 @@ function ArticleComments({
                             </Authorization>
                           </div>
                           <div className="ml-11">
-                            <p className="text-sm leading-relaxed text-wrap break-words">
+                            <p className="text-sm leading-relaxed text-wrap wrap-break-word">
                               {comment.content}
                             </p>
                           </div>

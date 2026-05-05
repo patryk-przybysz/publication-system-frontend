@@ -167,7 +167,7 @@ export function CreateArticleForm() {
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder="Enter article content"
                             rows={12}
-                            className="min-h-[300px] resize-none"
+                            className="min-h-75 resize-none"
                             aria-invalid={isInvalid}
                           />
                           {isInvalid ? (

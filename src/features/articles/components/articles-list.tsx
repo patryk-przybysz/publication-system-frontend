@@ -37,8 +37,8 @@ export function ArticlesList({ page, size }: ArticlesListProps) {
               <CardHeader>
                 <CardTitle className="text-xl">{article.title}</CardTitle>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <div className="flex items-center justify-between min-h-[2rem]">
+              <CardContent className="grow">
+                <div className="flex items-center justify-between min-h-8">
                   <p className="text-sm text-muted-foreground">
                     By {article.author}
                     <span className="mx-2">•</span>
@@ -67,7 +67,7 @@ export function ArticlesList({ page, size }: ArticlesListProps) {
               variant="outline"
               asChild
               disabled={disabled}
-              className="min-w-[100px] hover:bg-secondary transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-muted"
+              className="min-w-25 hover:bg-secondary transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-75 disabled:bg-muted"
               aria-label="Go to previous page"
             >
               <Link
@@ -88,7 +88,7 @@ export function ArticlesList({ page, size }: ArticlesListProps) {
               variant="outline"
               asChild
               disabled={disabled}
-              className="min-w-[100px] hover:bg-secondary transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/50 disabled:text-muted-foreground disabled:border-muted-foreground/30"
+              className="min-w-25 hover:bg-secondary transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/50 disabled:text-muted-foreground disabled:border-muted-foreground/30"
               aria-label="Go to next page"
             >
               <Link

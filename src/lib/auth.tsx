@@ -9,31 +9,8 @@ import { FetchError } from 'ofetch'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { api } from './api-client'
+import { authStorage } from './auth-storage'
 import type { MutationConfig, QueryConfig } from './react-query'
-
-const AUTH_STORAGE_KEY = 'user-credentials'
-
-export const authStorage = {
-  get: () => {
-    try {
-      const stored = localStorage.getItem(AUTH_STORAGE_KEY)
-      return stored ? JSON.parse(stored) : null
-    } catch {
-      return null
-    }
-  },
-  set: (credentials: AuthCredentials): void => {
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(credentials))
-  },
-  remove: () => localStorage.removeItem(AUTH_STORAGE_KEY),
-  getAuthHeader: (): string | null => {
-    const credentials = authStorage.get()
-    if (!credentials) return null
-
-    const encoded = btoa(`${credentials.username}:${credentials.password}`)
-    return `Basic ${encoded}`
-  },
-}
 
 const userKey = ['authenticated-user'] as const
 

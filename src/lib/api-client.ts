@@ -1,7 +1,7 @@
 import { env } from '@/config/env'
 import { ofetch } from 'ofetch'
 import { toast } from 'sonner'
-import { authStorage } from './auth'
+import { authStorage } from './auth-storage'
 
 export const api = ofetch.create({
   baseURL: env.VITE_API_URL,

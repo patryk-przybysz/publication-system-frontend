@@ -127,7 +127,7 @@ export function matchQueryStatus<TData, TError extends Error = Error>(
  * ```tsx
  * const articlesQuery = useArticles({ page, size })
  *
- * return useQueryMatchSimple(articlesQuery, (articles) => (
+ * return matchQuerySuccess(articlesQuery, (articles) => (
  *   <ArticlesList articles={articles} />
  * ))
  * ```

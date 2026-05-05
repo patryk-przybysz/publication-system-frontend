@@ -7,29 +7,6 @@ export function hasRole(user: User | null, roles: UserRole[]): boolean {
   return roles.includes(user.role as UserRole)
 }
 
-export function hasAnyRole(user: User | null, roles: UserRole[]): boolean {
-  return hasRole(user, roles)
-}
-
-export function hasAllRoles(user: User | null, roles: UserRole[]): boolean {
-  if (!user) return false
-  return roles.every((role) => user.role === role)
-}
-
-export function isOwnerOrHasRole(
-  user: User | null,
-  targetUsername: string | undefined,
-  roles: UserRole[],
-): boolean {
-  if (!user) return false
-
-  // Check if user has required role
-  if (hasRole(user, roles)) return true
-
-  // Check if user is the owner
-  return user.username === targetUsername
-}
-
 export function canPerformAction(
   user: User | null,
   options: {

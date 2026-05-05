@@ -1,0 +1,14 @@
+---
+description: TanStack Router file-based routes and generated route tree handling
+globs:
+  - src/app/routes/**/*.tsx
+  - src/app/router.tsx
+  - src/routeTree.gen.ts
+alwaysApply: false
+---
+# Routing
+
+- Keep route definitions in file-based route modules under `src/app/routes/`.
+- Treat `src/routeTree.gen.ts` as generated output; never edit it manually.
+- Put route-specific redirects, loaders, search validation, and auth gating in the route module that owns the path.
+- Move bulky view logic into feature components; routes should compose features rather than reimplementing them.

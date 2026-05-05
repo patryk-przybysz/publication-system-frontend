@@ -1,0 +1,16 @@
+---
+description: Authorization context, policy helpers, and feature permission modules
+globs:
+  - src/lib/authorization.tsx
+  - src/utils/permissions.ts
+  - src/features/**/permissions/**/*.ts
+  - src/app/routes/**/*.tsx
+alwaysApply: false
+---
+# Authorization and Permissions
+
+- Keep shared auth state, policy registration, and permission helpers centralized in `src/lib/authorization.tsx` and `src/utils/permissions.ts`.
+- Put feature-specific permission predicates in `src/features/<feature>/permissions/`.
+- Add new named policies to `POLICIES` instead of scattering inline checks through routes or components.
+- Prefer the existing `Authorization` component and `useCan*`/`useAuth` hooks over ad hoc role checks.
+- Keep permission helpers pure; they should not fetch, mutate, or render UI.

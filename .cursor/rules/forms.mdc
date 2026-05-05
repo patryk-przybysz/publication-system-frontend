@@ -1,93 +1,17 @@
 ---
-description: TanStack Form and shadcn Field conventions for project forms
+description: TanStack Form, Zod, and field component conventions
 globs:
+  - src/features/**/components/**/*-form.tsx
+  - src/features/**/components/**/*-editor.tsx
+  - src/lib/auth.tsx
 alwaysApply: false
 ---
-
-# Form Conventions
-
-Use this project pattern for form components across the application.
-
-## Core Stack
+# Forms
 
 - Use `@tanstack/react-form` for form state.
-- Use Zod schemas colocated with feature API/auth modules.
-- Prefer shadcn `Field` primitives from `@/components/ui/field`:
-  - `Field`
-  - `FieldLabel`
-  - `FieldContent`
-  - `FieldError`
-  - `FieldGroup`
-
-## Field Rendering Pattern
-
-Inside each `form.Field` render callback:
-
-1. Compute invalid state once:
-
-```tsx
-const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-```
-
-2. Reuse `isInvalid` for:
-
-   - `data-invalid` on `Field`
-   - `aria-invalid` on inputs
-   - conditional `FieldError` rendering
-
-3. Keep field markup explicit (avoid custom global form wrappers unless justified).
-
-## Submit and Side Effects
-
-- Keep `useForm({ onSubmit })` focused on form orchestration:
-  - collect/transform values
-  - call the mutation
-- Keep shared/domain side effects in mutation hooks (`features/*/api`):
-  - scoped `queryClient.invalidateQueries({ queryKey: ... })` (never call `invalidateQueries()` with no key)
-  - cache writes (`setQueryData`)
-  - cross-caller defaults that must always run (e.g. `authStorage.remove()` on auth error)
-  - hooks MUST forward caller callbacks via `onSuccess?.(...args)` / `onError?.(...args)` / `onSettled?.(...args)`
-- Keep view-local UI side effects in per-call handlers — this is the default for form submit:
-  - `mutate(payload, { onSuccess, onError })`
-  - close dialog/sheet (`setOpen(false)`)
-  - reset form (`form.reset()`)
-  - edit-mode toggles (`setIsEditing(false)`)
-  - action-specific toasts (`toast.success('Article created successfully!')`)
-  - navigation, prop callbacks forwarded from parent
-
-### When to choose hook-level `mutationConfig.onSuccess`
-
-Use `useXxx({ mutationConfig: { onSuccess } })` only when EVERY mutation success in that
-component must trigger the same behavior regardless of call site. Single-submit forms
-(the vast majority here) should use per-call. If the component may unmount mid-flight
-(e.g. user closes a dialog while pending) and you need a guaranteed side effect on
-success, lift it to the hook OR derive UI from `mutation.data` / `mutation.status`.
-
-### Example (preferred per-call shape)
-
-```tsx
-const createArticleMutation = useCreateArticle()
-
-const form = useForm({
-  // ...
-  onSubmit: ({ value }) => {
-    createArticleMutation.mutate(
-      { data: value },
-      {
-        onSuccess: () => {
-          toast.success('Article created successfully!')
-          setOpen(false)
-          form.reset()
-        },
-      },
-    )
-  },
-})
-```
-
-## Avoid
-
-- Mixing ad hoc field layouts in one form (stick to one pattern per file).
-- Duplicating the invalid expression multiple times in the same field block.
-- Putting local UI behavior (toasts, dialog/sheet close, `form.reset`, edit-mode toggles, navigation) as default logic in shared mutation hooks.
-- Calling `queryClient.invalidateQueries()` with no `queryKey` — always scope invalidation.
+- Keep Zod schemas colocated with the mutation or auth module that owns the payload.
+- Prefer the shadcn field primitives from `@/components/ui/field`.
+- Inside each `form.Field`, compute `const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid` once and reuse it for `data-invalid`, `aria-invalid`, and `FieldError`.
+- Keep `useForm({ onSubmit })` focused on orchestration; move side effects into per-call mutation handlers unless the same success behavior must run for every call site.
+- If a component must guarantee a success effect even when it may unmount mid-flight, lift the effect to the mutation hook or derive UI from mutation state.
+- Avoid mixing unrelated field layouts in the same file.

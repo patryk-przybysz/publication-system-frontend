@@ -1,21 +1,29 @@
 import { AlertCircle } from 'lucide-react'
 import type React from 'react'
 
-export type ErrorComponentProps = {
+export type ErrorFallbackProps = {
   children?: React.ReactNode
   icon?: React.ReactNode
   title?: string
   description?: string
+  fullPage?: boolean
 }
 
-export function ErrorComponent({
+export function ErrorFallback({
   children,
   icon = <AlertCircle className="h-8 w-8 text-destructive" />,
   title = 'Something went wrong',
   description = 'An unexpected error occurred. Please try again.',
-}: ErrorComponentProps) {
+  fullPage = true,
+}: ErrorFallbackProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div
+      className={
+        fullPage
+          ? 'min-h-screen flex items-center justify-center bg-background px-4'
+          : 'h-full w-full flex items-center justify-center bg-background px-4 py-8'
+      }
+    >
       <div className="text-center space-y-8 max-w-md w-full">
         <div className="space-y-4">
           <div className="mx-auto h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">

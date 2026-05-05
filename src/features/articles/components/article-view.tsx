@@ -1,4 +1,4 @@
-import { ErrorComponent } from '@/components/errors'
+import { ErrorFallback } from '@/components/errors'
 import { UnauthorizedError } from '@/components/errors/unauthorized'
 import { Link } from '@/components/ui/link'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -92,25 +92,19 @@ function ArticleComments({
                   {comments.map((comment, index) => {
                     const isCurrentUser =
                       currentUser?.username === comment.author
+                    const avatarClassName = isCurrentUser
+                      ? 'h-8 w-8 rounded-full flex items-center justify-center bg-primary text-primary-foreground'
+                      : 'h-8 w-8 rounded-full flex items-center justify-center bg-primary/10'
+                    const avatarTextClassName = isCurrentUser
+                      ? 'text-sm font-medium text-primary-foreground'
+                      : 'text-sm font-medium text-primary'
 
                     return (
                       <div key={comment.id}>
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
-                            <div
-                              className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                                isCurrentUser
-                                  ? 'bg-primary text-primary-foreground'
-                                  : 'bg-primary/10'
-                              }`}
-                            >
-                              <span
-                                className={`text-sm font-medium ${
-                                  isCurrentUser
-                                    ? 'text-primary-foreground'
-                                    : 'text-primary'
-                                }`}
-                              >
+                            <div className={avatarClassName}>
+                              <span className={avatarTextClassName}>
                                 {comment.author.charAt(0).toUpperCase()}
                               </span>
                             </div>
@@ -162,7 +156,7 @@ function ArticleComments({
 
 function ArticleUnauthorized() {
   return (
-    <ErrorComponent
+    <ErrorFallback
       icon={<Lock className="h-8 w-8 text-destructive" />}
       title="Access Restricted"
       description="Your account doesn't meet the requirements to view this article."
@@ -174,13 +168,13 @@ function ArticleUnauthorized() {
       >
         Back to Articles
       </Link>
-    </ErrorComponent>
+    </ErrorFallback>
   )
 }
 
 function ArticleNotFound() {
   return (
-    <ErrorComponent
+    <ErrorFallback
       icon={<FileWarning className="h-8 w-8 text-destructive" />}
       title="Article Not Found"
       description="This article doesn't exist or may have been removed by the author."
@@ -192,6 +186,6 @@ function ArticleNotFound() {
       >
         Browse Articles
       </Link>
-    </ErrorComponent>
+    </ErrorFallback>
   )
 }

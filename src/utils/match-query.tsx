@@ -1,4 +1,4 @@
-import { ErrorComponent } from '@/components/errors'
+import { ErrorFallback } from '@/components/errors'
 import { UnauthorizedError } from '@/components/errors/unauthorized'
 import { Spinner } from '@/components/ui/spinner'
 import type { UseQueryResult } from '@tanstack/react-query'
@@ -85,7 +85,7 @@ export function matchQueryStatus<TData, TError extends Error = Error>(
       }
       if (query.error.status === 404 || query.error.status === 500) {
         return (
-          <ErrorComponent
+          <ErrorFallback
             title="Content Not Found"
             description="The requested content could not be found or may have been removed."
           />
@@ -95,7 +95,7 @@ export function matchQueryStatus<TData, TError extends Error = Error>(
 
     // Fallback error component
     return (
-      <ErrorComponent
+      <ErrorFallback
         title="Something went wrong"
         description={query.error.message || 'An unexpected error occurred'}
       />

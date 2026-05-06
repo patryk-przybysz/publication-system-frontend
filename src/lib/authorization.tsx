@@ -121,13 +121,11 @@ export function Authorization({
   loading = null,
   ...authProps
 }: AuthorizationProps) {
-  const userQuery = useUser()
+  const { user, isLoading } = useAuth()
 
-  if (userQuery.isLoading) {
+  if (isLoading) {
     return <>{loading}</>
   }
-
-  const user = userQuery.data || null
 
   if (authProps?.requireAuth) {
     return user ? <>{children}</> : <>{fallback}</>

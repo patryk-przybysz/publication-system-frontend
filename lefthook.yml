@@ -8,3 +8,9 @@ pre-commit:
       stage_fixed: true
     typecheck:
       run: bun run typecheck
+
+pre-push:
+  parallel: true
+  commands:
+    test:
+      run: bun run test

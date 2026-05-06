@@ -3,12 +3,12 @@ import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 import { resolve } from 'node:path'
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    TanStackRouterVite({
+    tanstackRouter({
       autoCodeSplitting: true,
       routesDirectory: './src/app/routes',
     }),
@@ -18,6 +18,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: ['./src/testing/setup-tests.ts'],
     passWithNoTests: true,
   },
   resolve: {

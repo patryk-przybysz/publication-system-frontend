@@ -1,0 +1,8 @@
+# ---
+description: Test runner and testing command conventions
+alwaysApply: false
+---
+# Testing
+
+- Use `bun run test` for the Vitest suite.
+- Do not use `bun test` here, because it invokes Bun's test runner instead of the project’s Vitest config.

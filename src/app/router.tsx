@@ -1,4 +1,4 @@
-import { type AuthorizationContext, useAuth } from '@/lib/authorization'
+import { type AuthorizationState, useAuth } from '@/lib/authorization'
 import { queryClient } from '@/lib/react-query'
 import { routeTree } from '@/routeTree.gen'
 import type { QueryClient } from '@tanstack/react-query'
@@ -7,14 +7,14 @@ import { NotFound } from './not-found'
 
 export type RouterContext = {
   queryClient: QueryClient
-  auth: AuthorizationContext
+  auth: AuthorizationState
 }
 
 const router = createRouter({
   routeTree,
   context: {
     queryClient,
-    auth: {} as AuthorizationContext,
+    auth: {} as AuthorizationState,
   } satisfies RouterContext,
   defaultPreload: false,
   defaultNotFoundComponent: NotFound,

@@ -22,41 +22,32 @@ export const POLICIES = {
 type PolicyKey = keyof typeof POLICIES
 type Role = User['role']
 
-export type AuthorizationContext = {
+export type AuthorizationState = {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
-  hasRole: (roles: Role[]) => boolean
-  canPerform: (action: PolicyKey, ...args: never[]) => boolean
-  canPerformCustom: (action: PolicyFunction, ...args: never[]) => boolean
 }
 
-const AuthorizationContext = createContext<AuthorizationContext | null>(null)
+export const AuthorizationContext = createContext<AuthorizationState | null>(
+  null,
+)
 
 export function useAuth() {
   const context = useContext(AuthorizationContext)
   if (!context) {
-    throw new Error(
-      'useAuthorization must be used within an AuthorizationProvider',
-    )
+    throw new Error('useAuth must be used within an AuthorizationProvider')
   }
   return context
 }
 
 export function AuthorizationProvider({ children }: { children: ReactNode }) {
   const userQuery = useUser()
-  const user = userQuery.data || null
+  const user = userQuery.data ?? null
 
-  const contextValue: AuthorizationContext = {
+  const contextValue: AuthorizationState = {
     user,
     isLoading: userQuery.isLoading,
     isAuthenticated: !!user,
-    hasRole: (roles: Role[]) => hasRole(user, roles),
-    canPerform: (action: PolicyKey) => {
-      const policyFn = POLICIES[action]
-      return policyFn ? policyFn(user) : false
-    },
-    canPerformCustom: (action: PolicyFunction) => action(user),
   }
 
   return (
@@ -172,19 +163,20 @@ export function useAuthenticatedUser(): { user: User; isLoading: boolean } {
 }
 
 export function useHasRole(roles: Role | Role[]) {
-  const { hasRole } = useAuth()
+  const { user } = useAuth()
   const roleArray = Array.isArray(roles) ? roles : [roles]
-  return hasRole(roleArray)
+  return hasRole(user, roleArray)
 }
 
 export function useCanPerform(action: PolicyKey) {
-  const { canPerform } = useAuth()
-  return canPerform(action)
+  const { user } = useAuth()
+  const policyFn = POLICIES[action]
+  return policyFn ? policyFn(user) : false
 }
 
 export function useCanPerformCustom(action: PolicyFunction) {
-  const { canPerformCustom } = useAuth()
-  return canPerformCustom(action)
+  const { user } = useAuth()
+  return action(user)
 }
 
 // Specialized hooks for common permission checks

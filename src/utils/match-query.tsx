@@ -5,14 +5,14 @@ import type { UseQueryResult } from '@tanstack/react-query'
 import { FetchError } from 'ofetch'
 import type { ReactNode } from 'react'
 
-type QueryMatchPatterns<TData, TError extends Error = Error> = {
+export type QueryMatchPatterns<TData, TError extends Error = Error> = {
   loading?: () => ReactNode
   error?: (error: TError) => ReactNode
   success: (data: TData) => ReactNode
   empty?: (data: TData) => ReactNode
 }
 
-type QueryMatchOptions = {
+export type QueryMatchOptions = {
   /**
    * Custom loading component size
    */

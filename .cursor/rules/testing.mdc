@@ -1,8 +1,9 @@
 # ---
-description: Test runner and testing command conventions
+description: Test runner, MSW, and testing command conventions
 alwaysApply: false
 ---
 # Testing
 
 - Use `bun run test` for the Vitest suite.
 - Do not use `bun test` here, because it invokes Bun's test runner instead of the project’s Vitest config.
+- Use the browser worker for local development only behind `VITE_ENABLE_API_MOCKING=true`.

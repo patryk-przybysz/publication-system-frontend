@@ -11,6 +11,7 @@ export default defineConfig({
     tanstackRouter({
       autoCodeSplitting: true,
       routesDirectory: './src/app/routes',
+      routeFileIgnorePattern: '.*\\.test\\.tsx',
     }),
     viteReact(),
     tailwindcss(),

@@ -11,6 +11,11 @@ export const env = createEnv({
   client: {
     VITE_API_URL: z.string().url().default('http://localhost:8080/api'),
     VITE_URL: z.string().url().default('http://localhost:3000'),
+    VITE_ENABLE_API_MOCKING: z
+      .string()
+      .optional()
+      .default('false')
+      .transform((s) => s !== 'false' && s !== '0'),
   },
 
   shared: {

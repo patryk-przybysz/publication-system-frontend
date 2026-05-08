@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@msw/data": "^1.1.5",
     "@ngneat/falso": "^8.0.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -60,9 +61,15 @@
     "@vitejs/plugin-react": "^4.7.0",
     "jsdom": "^26.1.0",
     "lefthook": "^2.1.6",
+    "msw": "^2.14.4",
     "typescript": "^5.9.3",
     "vite": "^6.4.1",
     "vitest": "^3.2.4",
     "web-vitals": "^4.2.4"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

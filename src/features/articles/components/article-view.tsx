@@ -20,7 +20,8 @@ export function ArticleView({ articleId }: { articleId: string }) {
 
   return matchQueryStatus(articleQuery, {
     error: (e) => {
-      if (e.status === 500) return <ArticleNotFound />
+      // 404 is the usual status for a missing article; the original backend returns 500 in that case, so we handle both.
+      if (e.status === 404 || e.status === 500) return <ArticleNotFound />
       if (e.status === 403) return <ArticleUnauthorized />
       return <UnauthorizedError />
     },

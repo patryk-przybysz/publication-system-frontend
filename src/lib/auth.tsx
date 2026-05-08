@@ -15,14 +15,14 @@ import type { MutationConfig, QueryConfig } from './react-query'
 const userKey = ['authenticated-user'] as const
 
 export const loginInputSchema = z.object({
-  username: z.string().trim().min(1, 'Username is required'),
-  password: z.string().min(1, 'Password is required'),
+  username: z.string().trim().min(1, { error: 'Username is required' }),
+  password: z.string().min(1, { error: 'Password is required' }),
 })
 
 export const registerInputSchema = z.object({
-  username: z.string().trim().min(1, 'Username is required'),
-  password: z.string().min(1, 'Password is required'),
-  birth: z.string().min(1, 'Birth date is required'),
+  username: z.string().trim().min(1, { error: 'Username is required' }),
+  password: z.string().min(1, { error: 'Password is required' }),
+  birth: z.string().min(1, { error: 'Birth date is required' }),
 })
 
 type AuthCredentials = z.infer<typeof loginInputSchema>

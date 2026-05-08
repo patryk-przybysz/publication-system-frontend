@@ -75,6 +75,7 @@ export function ArticlesList({ page, size }: ArticlesListProps) {
                 search={(prev) => ({
                   ...prev,
                   page: page - 1,
+                  size: prev.size ?? size,
                 })}
                 className="flex items-center justify-center gap-2"
               >
@@ -96,6 +97,7 @@ export function ArticlesList({ page, size }: ArticlesListProps) {
                 search={(prev) => ({
                   ...prev,
                   page: page + 1,
+                  size: prev.size ?? size,
                 })}
                 className="flex items-center justify-center gap-2"
               >

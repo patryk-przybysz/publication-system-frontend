@@ -9,11 +9,13 @@ const optionalNonNegativeInt = (message: string) =>
   z
     .string()
     .transform((s) => (s.trim() === '' ? 0 : Number(s)))
-    .refine((n) => !Number.isNaN(n) && n >= 0 && Number.isInteger(n), message)
+    .refine((n) => !Number.isNaN(n) && n >= 0 && Number.isInteger(n), {
+      error: message,
+    })
 
 export const createArticleInputSchema = z.object({
-  title: z.string().trim().min(1, 'Title is required'),
-  content: z.string().trim().min(1, 'Content is required'),
+  title: z.string().trim().min(1, { error: 'Title is required' }),
+  content: z.string().trim().min(1, { error: 'Content is required' }),
   requiredAge: optionalNonNegativeInt('Required age must be a valid number'),
   requiredAccountAge: optionalNonNegativeInt(
     'Required account age must be a valid number',

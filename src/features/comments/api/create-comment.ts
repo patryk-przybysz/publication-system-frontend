@@ -6,7 +6,7 @@ import { api } from '@/lib/api-client'
 import type { MutationConfig } from '@/lib/react-query'
 
 export const createCommentInputSchema = z.object({
-  content: z.string().trim().min(1, 'Comment content is required'),
+  content: z.string().trim().min(1, { error: 'Comment content is required' }),
   articleId: z.string(),
 })
 

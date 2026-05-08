@@ -9,8 +9,8 @@ export const updateAccountInputSchema = z.object({
   birth: z
     .string()
     .trim()
-    .min(1, 'Birth date is required')
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Birth date must be a valid date'),
+    .min(1, { error: 'Birth date is required' })
+    .regex(/^\d{4}-\d{2}-\d{2}$/, { error: 'Birth date must be a valid date' }),
 })
 
 export type UpdateAccountInput = z.infer<typeof updateAccountInputSchema>

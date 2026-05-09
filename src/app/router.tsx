@@ -11,6 +11,7 @@ export type RouterContext = {
 }
 
 const router = createRouter({
+  basepath: import.meta.env.BASE_URL,
   routeTree,
   context: {
     queryClient,

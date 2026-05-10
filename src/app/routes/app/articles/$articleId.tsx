@@ -6,9 +6,19 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/app/articles/$articleId')({
   component: ArticleRoute,
-  loader: ({ context, params }) => {
-    context.queryClient.prefetchQuery(getArticleQueryOptions(params.articleId))
-  },
+  loader: async ({ context, params }) =>
+    context.queryClient.ensureQueryData(
+      getArticleQueryOptions(params.articleId),
+    ),
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: loaderData
+          ? `${loaderData.title} | Publication System`
+          : 'Article | Publication System',
+      },
+    ],
+  }),
 })
 
 function ArticleRoute() {

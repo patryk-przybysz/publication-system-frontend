@@ -1,5 +1,9 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Outlet,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import type { RouterContext } from '@/app/router'
@@ -9,11 +13,19 @@ import { Toaster } from '@/components/ui/sonner'
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
   errorComponent: RootErrorBoundary,
+  head: () => ({
+    meta: [
+      {
+        title: 'Home | Publication System',
+      },
+    ],
+  }),
 })
 
 function RootLayout() {
   return (
     <>
+      <HeadContent />
       <Outlet />
 
       <Toaster richColors />

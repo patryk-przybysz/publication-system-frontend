@@ -9,6 +9,13 @@ import { Edit, Globe, Settings, Shield, User } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
   component: HomeRoute,
+  head: () => ({
+    meta: [
+      {
+        title: 'Home | Publication System',
+      },
+    ],
+  }),
 })
 
 function HomeRoute() {

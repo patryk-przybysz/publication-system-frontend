@@ -9,6 +9,13 @@ import { z } from 'zod'
 
 export const Route = createFileRoute('/app/articles/')({
   component: ArticlesRoute,
+  head: () => ({
+    meta: [
+      {
+        title: 'Articles | Publication System',
+      },
+    ],
+  }),
   loaderDeps: ({ search: { page, size } }) => ({
     page,
     size,

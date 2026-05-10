@@ -13,6 +13,13 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/app/_authenticated/profile')({
   component: ProfileRoute,
+  head: () => ({
+    meta: [
+      {
+        title: 'Profile | Publication System',
+      },
+    ],
+  }),
 })
 
 function ProfileRoute() {

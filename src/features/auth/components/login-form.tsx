@@ -131,14 +131,18 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
             </Button>
           )}
         </form>
-        {env.NODE_ENV === 'development' && (
+        {env.VITE_ENABLE_API_MOCKING && (
           <div className="mt-4 pt-4 border-t border-muted">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
               <p className="text-xs font-medium text-orange-600 dark:text-orange-400">
-                DEVELOPMENT MODE
+                API MOCKING MODE
               </p>
             </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              API responses are simulated locally. Actions are not persisted to
+              the backend.
+            </p>
             <p className="text-xs text-muted-foreground mb-3">
               Test accounts available:
             </p>

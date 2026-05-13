@@ -4,10 +4,14 @@ A React frontend application for the digital publishing platform. This client ap
 
 This project was originally designed and implemented by our team as part of an academic initiative at **Gdańsk University of Technology**, within the course **_Introduction to Cybersecurity_**. It serves as the frontend companion to our Publication System API, showcasing real-world applications of **RBAC** and **ABAC** access control models.
 
+## [Live demo](https://patryk-przybysz.github.io/publication-system-frontend)
+
+![Article detail view](docs/article-view.png)
+
 ## 🚀 Quick Start
 
 1. **Prerequisites**: Bun (or Node.js 18+) and [Backend API](https://github.com/varev-dev/publication-system-api) running
-   - or set `VITE_ENABLE_API_MOCKING=true` to use MSW instead of the live backend
+   - or set `ENABLE_API_MOCKING=true` to use MSW instead of the live backend
 2. **Clone & Install**:
    ```bash
    git clone https://github.com/patryk-przybysz/publication-system-frontend
@@ -28,7 +32,7 @@ This project was originally designed and implemented by our team as part of an a
 ## 🧪 Testing & Mocking
 
 - Run the Vitest suite with `bun run test`
-- The repository uses MSW for integration-style tests, and the browser worker can be enabled locally with `VITE_ENABLE_API_MOCKING=true`
+- The repository uses MSW for integration-style tests, and the browser worker can be enabled locally with `ENABLE_API_MOCKING=true`
 
 ## 📁 Project Structure
 

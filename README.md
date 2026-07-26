@@ -41,7 +41,7 @@ bun run test:unit         # Node unit tests (*.test.ts)
 bun run test:browser      # Browser tests (*.test.tsx)
 ```
 
-First run: `bunx playwright install chromium` (browser tests need Chromium binaries).
+First run after clone: `bun install` installs Chromium via `postinstall`. If browser tests fail with a missing-browser error, run `bunx playwright install chromium`.
 
 ## Stack
 

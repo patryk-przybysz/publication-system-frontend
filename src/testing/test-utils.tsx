@@ -1,8 +1,8 @@
 import { AuthorizationContext } from '@/lib/authorization'
 import type { AuthorizationState } from '@/lib/authorization'
 import type { User } from '@/types/api'
-import { render as rtlRender } from '@testing-library/react'
 import type { ReactElement, ReactNode } from 'react'
+import { render } from 'vitest-browser-react'
 
 type AuthState = {
   user?: User | null
@@ -20,7 +20,7 @@ function createAuthState({
   }
 }
 
-export function renderWithAuthContext(
+export async function renderWithAuthContext(
   ui: ReactElement,
   authState: AuthState = {},
 ) {
@@ -30,5 +30,5 @@ export function renderWithAuthContext(
     return <AuthorizationContext value={value}>{children}</AuthorizationContext>
   }
 
-  return rtlRender(ui, { wrapper: Wrapper })
+  return render(ui, { wrapper: Wrapper })
 }

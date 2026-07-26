@@ -1,9 +1,31 @@
-# ---
+---
 description: Test runner, MSW, and testing command conventions
 alwaysApply: false
 ---
 # Testing
 
+## Commands
+
 - Use `bun run test` for the Vitest suite.
-- Do not use `bun test` here, because it invokes Bun's test runner instead of the project’s Vitest config.
-- Use the browser worker for local development only behind `VITE_ENABLE_API_MOCKING=true`.
+- Do not use `bun test` here — it invokes Bun's runner instead of this project's Vitest config.
+
+## Projects
+
+Vitest runs two projects:
+
+| Project | Files | Environment |
+| --- | --- | --- |
+| `unit` | `src/**/*.test.ts` | Node |
+| `browser` | `src/**/*.test.tsx` | Chromium via Playwright (`@vitest/browser-playwright`) |
+
+- Put pure logic and mocked-API tests in `*.test.ts`.
+- Put React component, hook, and route tests in `*.test.tsx` so they run in a real browser.
+- Prefer `vitest-browser-react` (`render`, locators, `expect.element`) for component UI assertions.
+- `@testing-library/react` `renderHook` is fine for hook-only browser tests.
+- Do not add jsdom/happy-dom; browser coverage belongs in the browser project (and later Playwright E2E).
+
+## MSW
+
+- Browser tests start the MSW service worker from `src/testing/setup-browser.ts`.
+- Use the browser worker for local app development only behind `VITE_ENABLE_API_MOCKING=true`.
+- Full end-to-end flows against a real backend belong in a future Playwright E2E suite, not Vitest Browser Mode.

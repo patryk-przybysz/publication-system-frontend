@@ -2,7 +2,6 @@ import { createUser } from '@/testing/data-generators'
 import { renderWithAuthContext } from '@/testing/test-utils'
 import type { AccountPublicDetails } from '@/types/api'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
 import { AccountDetailsCard } from '../account-details-card'
@@ -17,7 +16,7 @@ const account: AccountPublicDetails = {
 }
 
 describe('AccountDetailsCard', () => {
-  it('shows the account details and the edit action for the owner', () => {
+  it('shows the account details and the edit action for the owner', async () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -26,7 +25,7 @@ describe('AccountDetailsCard', () => {
       },
     })
 
-    renderWithAuthContext(
+    const screen = await renderWithAuthContext(
       <QueryClientProvider client={queryClient}>
         <AccountDetailsCard account={account} />
       </QueryClientProvider>,
@@ -35,17 +34,17 @@ describe('AccountDetailsCard', () => {
       },
     )
 
-    expect(screen.getByText('alice')).toBeInTheDocument()
-    expect(screen.getByText('EDITOR')).toBeInTheDocument()
-    expect(screen.getByText('⭐ Premium')).toBeInTheDocument()
-    expect(screen.getByText('🔞 Adult')).toBeInTheDocument()
-    expect(screen.getByText('Verified')).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: /edit birth date/i }),
-    ).toBeInTheDocument()
+    await expect.element(screen.getByText('alice')).toBeInTheDocument()
+    await expect.element(screen.getByText('EDITOR')).toBeInTheDocument()
+    await expect.element(screen.getByText('⭐ Premium')).toBeInTheDocument()
+    await expect.element(screen.getByText('🔞 Adult')).toBeInTheDocument()
+    await expect.element(screen.getByText('Verified')).toBeInTheDocument()
+    await expect
+      .element(screen.getByRole('button', { name: /edit birth date/i }))
+      .toBeInTheDocument()
   })
 
-  it('hides the edit action for unrelated users', () => {
+  it('hides the edit action for unrelated users', async () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -54,7 +53,7 @@ describe('AccountDetailsCard', () => {
       },
     })
 
-    renderWithAuthContext(
+    const screen = await renderWithAuthContext(
       <QueryClientProvider client={queryClient}>
         <AccountDetailsCard account={account} />
       </QueryClientProvider>,
@@ -63,9 +62,9 @@ describe('AccountDetailsCard', () => {
       },
     )
 
-    expect(screen.getByText('alice')).toBeInTheDocument()
-    expect(
-      screen.queryByRole('button', { name: /edit birth date/i }),
-    ).not.toBeInTheDocument()
+    await expect.element(screen.getByText('alice')).toBeInTheDocument()
+    await expect
+      .element(screen.getByRole('button', { name: /edit birth date/i }))
+      .not.toBeInTheDocument()
   })
 })

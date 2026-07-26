@@ -33,6 +33,16 @@ Built at **Gdańsk University of Technology** for *Introduction to Cybersecurity
 
    Opens at [http://localhost:3000](http://localhost:3000).
 
+## Testing
+
+```bash
+bun run test              # all projects
+bun run test:unit         # Node unit tests (*.test.ts)
+bun run test:browser      # Browser tests (*.test.tsx)
+```
+
+First run: `bunx playwright install chromium` (browser tests need Chromium binaries).
+
 ## Stack
 
 - React 19 · TypeScript · Vite

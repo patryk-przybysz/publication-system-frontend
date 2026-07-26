@@ -1,3 +1,4 @@
+// Hook-only browser tests: RTL renderHook (not vitest-browser-react) per testing.mdc.
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, renderHook, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'

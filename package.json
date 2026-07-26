@@ -16,6 +16,7 @@
     "check": "biome check",
     "typecheck": "tsc --noEmit",
     "validate": "biome check && tsc --noEmit",
+    "postinstall": "playwright install chromium",
     "prepare": "lefthook install"
   },
   "dependencies": {

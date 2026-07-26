@@ -23,6 +23,7 @@ Vitest runs two projects:
 - Prefer `vitest-browser-react` (`render`, locators, `expect.element`) for component UI assertions.
 - `@testing-library/react` `renderHook` is fine for hook-only browser tests.
 - Do not add jsdom/happy-dom; browser coverage belongs in the browser project (and later Playwright E2E).
+- Keep `renderWithAuthContext` for components that only need a stubbed `AuthorizationContext` (RTL custom-render pattern). Do not replace it with a memory router — that solves a different problem (URL/navigation). Route-level coverage mounts `<App />` (or a future `createMemoryHistory` helper); auth-gated UI unit tests stub auth state.
 
 ## MSW
 

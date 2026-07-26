@@ -20,6 +20,10 @@ function createAuthState({
   }
 }
 
+/**
+ * Stub AuthorizationContext for component tests (owner vs stranger, loading, etc.).
+ * Not a router helper — route tests should mount App / use memory history instead.
+ */
 export async function renderWithAuthContext(
   ui: ReactElement,
   authState: AuthState = {},

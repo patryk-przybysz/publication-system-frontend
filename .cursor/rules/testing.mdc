@@ -6,7 +6,7 @@ alwaysApply: false
 
 ## Commands
 
-- Use `bun run test` for the Vitest suite.
+- Use `bun run test` for the Vitest suite (`test:unit` / `test:browser` / `test:watch` for scoped runs).
 - Do not use `bun test` here — it invokes Bun's runner instead of this project's Vitest config.
 
 ## Projects
